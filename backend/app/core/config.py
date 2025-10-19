@@ -93,6 +93,18 @@ class Settings(BaseSettings):
     EMAIL_TEST_USER: EmailStr = "test@example.com"
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
+    
+    # MQTT Settings
+    MQTT_BROKER: str | None = None
+    MQTT_PORT: int = 8883  # Default TLS port
+    MQTT_USERNAME: str | None = None
+    MQTT_PASSWORD: str | None = None
+    MQTT_CA_CERTS: str | None = None  # Path to CA certificate
+    
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def mqtt_enabled(self) -> bool:
+        return bool(self.MQTT_BROKER)
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":

@@ -13,7 +13,7 @@ from app.api.deps import (
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from app.models.item_model import Item
-from app.models.general_models import Message, UpdatePassword
+from app.models.general_models import Message
 from app.models.user_model import (
     User,
     UserCreate,
@@ -22,6 +22,7 @@ from app.models.user_model import (
     UsersPublic,
     UserUpdate,
     UserUpdateMe,
+    UpdatePassword,
 )
 from app.utils import generate_new_account_email, send_email
 

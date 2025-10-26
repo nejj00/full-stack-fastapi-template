@@ -2,7 +2,10 @@ import uuid
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
-from .user_model import User
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from .user_model import User
 
 
 # Shared properties
@@ -27,7 +30,7 @@ class Item(ItemBase, table=True):
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: User | None = Relationship(back_populates="items")
+    owner: Optional["User"] = Relationship(back_populates="items")
 
 
 # Properties to return via API, id is always required

@@ -13,6 +13,8 @@ class RoleBase(SQLModel):
 
 
 class Role(RoleBase, table=True):
+    __tablename__: str = "roles"
+
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str
     description: Optional[str] = None

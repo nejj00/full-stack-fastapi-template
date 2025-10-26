@@ -14,6 +14,8 @@ class OrgUnitBase(SQLModel):
 
 
 class OrgUnit(OrgUnitBase, table=True):
+    __tablename__: str = "org_units"
+
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     client_id: uuid.UUID = Field(foreign_key="client.id")
     parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="orgunit.id")

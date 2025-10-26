@@ -16,6 +16,8 @@ class PhoneBoothBase(SQLModel):
 
 
 class PhoneBooth(PhoneBoothBase, table=True):
+    __tablename__: str = "phone_booths"
+    
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     client_id: Optional[uuid.UUID] = Field(default=None, foreign_key="client.id")
     org_unit_id: Optional[uuid.UUID] = Field(default=None, foreign_key="orgunit.id") # TODO This field is not needed, remove later

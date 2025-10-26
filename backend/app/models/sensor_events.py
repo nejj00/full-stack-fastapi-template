@@ -16,6 +16,8 @@ class SensorEventBase(SQLModel):
 
 
 class SensorEvent(SensorEventBase, table=True):
+    __tablename__: str = "sensor_events"
+
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     sensor_id: uuid.UUID = Field(foreign_key="sensor.id")
     phone_booth_id: uuid.UUID = Field(foreign_key="phonebooth.id")

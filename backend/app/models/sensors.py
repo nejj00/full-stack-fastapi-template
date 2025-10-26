@@ -14,6 +14,8 @@ class SensorBase(SQLModel):
 
 
 class Sensor(SensorBase, table=True):
+    __tablename__: str = "sensors"
+    
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     phone_booth_id: uuid.UUID = Field(foreign_key="phonebooth.id")
     type: Optional[str] = None

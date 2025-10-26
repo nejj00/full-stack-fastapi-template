@@ -14,6 +14,8 @@ class UsageSessionBase(SQLModel):
 
 
 class UsageSession(UsageSessionBase, table=True):
+    __tablename__: str = "usage_sessions"
+    
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     phone_booth_id: uuid.UUID = Field(foreign_key="phonebooth.id")
     client_id: uuid.UUID = Field(foreign_key="client.id")

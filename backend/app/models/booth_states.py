@@ -11,6 +11,8 @@ class BoothStateBase(SQLModel):
 
 
 class BoothState(BoothStateBase, table=True):
+    __tablename__: str = "booth_states"
+
     id: int = Field(primary_key=True)
     name: str
     description: Optional[str] = None

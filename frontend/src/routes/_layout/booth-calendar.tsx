@@ -7,6 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 // import { dummyEvents, DUMMY_EVENTS_6_TO_8 } from "@/data/dummyEvents"
+import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 
 
 // 🎨 A simple set of colors to cycle through for events
@@ -134,6 +135,7 @@ function BoothCalendar() {
       <Heading size="lg" mb={4}>
         Busy Phone Booths
       </Heading>
+      <PhoneBoothTreeFilter />
       <BusyPhoneBoothsList />
       <CalendarView />
     </Container>

@@ -6,6 +6,20 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
+// import { dummyEvents, DUMMY_EVENTS_6_TO_8 } from "@/data/dummyEvents"
+
+
+// 🎨 A simple set of colors to cycle through for events
+const EVENT_COLORS = [
+  "#3182ce", // blue
+  "#38a169", // green
+  "#d69e2e", // yellow
+  "#dd6b20", // orange
+  "#805ad5", // purple
+  "#e53e3e", // red
+  "#319795", // teal
+  "#718096", // gray
+]
 
 function getBusyPhoneBoothsQuery() {
   return {
@@ -71,12 +85,23 @@ function CalendarView() {
   const booths = data || []
   const now = new Date().toISOString()
 
+  // Helper: deterministic color picker based on booth ID
+  const getColorForBooth = (boothId: string) => {
+    let hash = 0
+    for (let i = 0; i < boothId.length; i++) {
+      hash = boothId.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    const colorIndex = Math.abs(hash) % EVENT_COLORS.length
+    return EVENT_COLORS[colorIndex]
+  }
+
   // Transform booth data → FullCalendar event format
   const events = booths.map((booth: any) => ({
     id: booth.id,
     title: booth.name || 'Unknown Booth',
-    start: booth.updated_at, // when it was last busy
-    end: now, // still busy until now
+    start: booth.updated_at,
+    end: now,
+    color: getColorForBooth(booth.id), // 👈 unique color per booth
   }))
 
   return (
@@ -86,7 +111,7 @@ function CalendarView() {
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay',
         }}
         initialView='dayGridMonth'
         editable={false}
@@ -94,8 +119,8 @@ function CalendarView() {
         selectMirror={false}
         dayMaxEvents={true}
         weekends={true}
-        events={events} // 👈 dynamically injected events
-        eventColor="#3182ce"
+        // events={[...dummyEvents, ...DUMMY_EVENTS_6_TO_8]} // test events
+        events={events} // 👈 dynamically injected events with colors
         eventDisplay="block"
         height="auto"
       />

@@ -17,10 +17,10 @@ class OrgUnit(OrgUnitBase, table=True):
     __tablename__: str = "org_units"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    client_id: uuid.UUID = Field(foreign_key="client.id")
-    parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="orgunit.id")
+    client_id: uuid.UUID = Field(foreign_key="clients.id")
+    parent_id: Optional[uuid.UUID] = Field(default=None, foreign_key="org_units.id")
     name: str
-    type: Optional[str] = None
+    type_id: Optional[int] = Field(default=0, foreign_key="org_unit_types.id")
     timezone: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

@@ -61,9 +61,18 @@ interface Node {
     type: "client" | "orgUnit" | "booth"
 }
 
-// 🧠 Utility: build hierarchy
+// 🧠 Utility: recursively sort nodes by name
+function sortTree(node: Node): Node {
+    if (node.children && node.children.length > 0) {
+        node.children = node.children
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(sortTree)
+    }
+    return node
+}
+
+// 🧩 Build hierarchy from clients, orgUnits, and booths
 function buildTree(clients: any[], orgUnits: any[], booths: any[]): Node {
-    // Map for quick lookup
     const orgUnitMap = new Map<string, Node>()
 
     // Step 1. Create orgUnit nodes
@@ -76,7 +85,7 @@ function buildTree(clients: any[], orgUnits: any[], booths: any[]): Node {
         })
     })
 
-    // Step 2. Link orgUnits under their parents
+    // Step 2. Link orgUnits under parents
     orgUnits.forEach((ou) => {
         const node = orgUnitMap.get(ou.id)!
         if (ou.parent_id) {
@@ -85,7 +94,7 @@ function buildTree(clients: any[], orgUnits: any[], booths: any[]): Node {
         }
     })
 
-    // Step 3. Create client nodes and attach top-level orgUnits
+    // Step 3. Create clients and attach top-level orgUnits
     const clientMap = new Map<string, Node>()
     clients.forEach((client) => {
         clientMap.set(client.id, {
@@ -115,13 +124,16 @@ function buildTree(clients: any[], orgUnits: any[], booths: any[]): Node {
         }
     })
 
-    // Step 5. Root node with all clients
-    return {
+    // Step 5. Root with all clients
+    const root: Node = {
         id: "ROOT",
         name: "",
         type: "client",
         children: Array.from(clientMap.values()),
     }
+
+    // ✅ Step 6. Sort everything recursively
+    return sortTree(root)
 }
 
 const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) => {
@@ -129,8 +141,10 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
     const orgUnitsQuery = useQuery(getOrgUnitsQuery())
     const boothsQuery = useQuery(getPhoneBoothsQuery())
 
-    const isLoading = clientsQuery.isLoading || orgUnitsQuery.isLoading || boothsQuery.isLoading
-    const hasError = clientsQuery.isError || orgUnitsQuery.isError || boothsQuery.isError
+    const isLoading =
+        clientsQuery.isLoading || orgUnitsQuery.isLoading || boothsQuery.isLoading
+    const hasError =
+        clientsQuery.isError || orgUnitsQuery.isError || boothsQuery.isError
 
     if (isLoading) {
         return (
@@ -164,7 +178,7 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
             defaultCheckedValue={[]}
             onCheckedChange={(details) => {
                 console.log("Checked in TreeView:", details.checkedValue)
-                onCheckedChange?.(details.checkedValue) // pass selected booth IDs up
+                onCheckedChange?.(details.checkedValue)
             }}
         >
             <TreeView.Label>Phone Booths</TreeView.Label>

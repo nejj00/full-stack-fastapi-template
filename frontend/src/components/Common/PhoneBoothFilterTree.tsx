@@ -3,13 +3,91 @@ import {
     TreeView,
     createTreeCollection,
     useTreeViewNodeContext,
+    Spinner,
+    Center,
 } from "@chakra-ui/react"
+import { useQuery } from "@tanstack/react-query"
 import { LuFile, LuFolder } from "react-icons/lu"
+import { ClientsService, OrgUnitsService, PhoneBoothsService } from "@/client"
 
 interface PhoneBoothTreeFilterProps {
     onCheckedChange?: (checkedItems: string[]) => void
 }
 
+interface Node {
+    id: string
+    name: string
+    children?: Node[]
+}
+
+/* -------------------------------
+    Queries
+-------------------------------- */
+function getClientsQuery() {
+    return {
+        queryKey: ["clients"],
+        queryFn: () => ClientsService.readClients(),
+    }
+}
+
+function getOrgUnitsQuery() {
+    return {
+        queryKey: ["orgUnits"],
+        queryFn: () => OrgUnitsService.readOrgUnits(),
+    }
+}
+
+function getPhoneBoothsQuery() {
+    return {
+        queryKey: ["phoneBooths"],
+        queryFn: () => PhoneBoothsService.readPhoneBooths(),
+    }
+}
+
+/* -------------------------------
+    Helper: build hierarchical tree
+-------------------------------- */
+function buildTree(clients: any[], orgUnits: any[]): Node[] {
+    const tree: Node[] = []
+
+    for (const client of clients) {
+        // Group org units belonging to this client
+        const clientUnits = orgUnits.filter(
+            (unit) => unit.client_id === client.id
+        )
+
+        // Build map of orgUnits by id for lookup
+        const unitMap: Record<string, Node> = {}
+        clientUnits.forEach((unit) => {
+            unitMap[unit.id] = { id: unit.id, name: unit.name, children: [] }
+        })
+
+        // Connect children to parents
+        const roots: Node[] = []
+        clientUnits.forEach((unit) => {
+            const node = unitMap[unit.id]
+            if (unit.parent_id) {
+                const parent = unitMap[unit.parent_id]
+                if (parent) parent.children?.push(node)
+            } else {
+                roots.push(node)
+            }
+        })
+
+        // Add client node with its org structure
+        tree.push({
+            id: client.id,
+            name: client.name,
+            children: roots,
+        })
+    }
+
+    return tree
+}
+
+/* -------------------------------
+    Checkbox Node Component
+-------------------------------- */
 const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     const nodeState = useTreeViewNodeContext()
     return (
@@ -28,7 +106,48 @@ const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     )
 }
 
+/* -------------------------------
+    Main Component
+-------------------------------- */
 const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) => {
+    const {
+        data: clients,
+        isLoading: clientsLoading,
+        isError: clientsError,
+    } = useQuery(getClientsQuery())
+
+    const {
+        data: orgUnits,
+        isLoading: orgUnitsLoading,
+        isError: orgUnitsError,
+    } = useQuery(getOrgUnitsQuery())
+
+    if (clientsLoading || orgUnitsLoading) {
+        return (
+            <Center p={4}>
+                <Spinner />
+            </Center>
+        )
+    }
+
+    if (clientsError || orgUnitsError) {
+        return <Center color="red.500">Failed to load tree data</Center>
+    }
+
+    // Build hierarchical structure
+    const nodes = buildTree(clients || [], orgUnits || [])
+
+    // Create Chakra Tree collection dynamically
+    const collection = createTreeCollection<Node>({
+        nodeToValue: (node) => node.id,
+        nodeToString: (node) => node.name,
+        rootNode: {
+            id: "ROOT",
+            name: "",
+            children: nodes,
+        },
+    })
+
     return (
         <TreeView.Root
             collection={collection}
@@ -36,10 +155,10 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
             defaultCheckedValue={[]}
             onCheckedChange={(details) => {
                 console.log("Checked in TreeView:", details.checkedValue)
-                onCheckedChange?.(details.checkedValue) // 👈 send data to parent
+                onCheckedChange?.(details.checkedValue)
             }}
         >
-            <TreeView.Label>Tree</TreeView.Label>
+            <TreeView.Label>Organization Tree</TreeView.Label>
             <TreeView.Tree>
                 <TreeView.Node
                     render={({ node, nodeState }) =>
@@ -62,50 +181,5 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
         </TreeView.Root>
     )
 }
-
-interface Node {
-    id: string
-    name: string
-    children?: Node[]
-}
-
-const collection = createTreeCollection<Node>({
-    nodeToValue: (node) => node.id,
-    nodeToString: (node) => node.name,
-    rootNode: {
-        id: "ROOT",
-        name: "",
-        children: [
-            {
-                id: "node_modules",
-                name: "node_modules",
-                children: [
-                    { id: "node_modules/zag-js", name: "zag-js" },
-                    { id: "node_modules/pandacss", name: "panda" },
-                    {
-                        id: "node_modules/@types",
-                        name: "@types",
-                        children: [
-                            { id: "node_modules/@types/react", name: "react" },
-                            { id: "node_modules/@types/react-dom", name: "react-dom" },
-                        ],
-                    },
-                ],
-            },
-            {
-                id: "src",
-                name: "src",
-                children: [
-                    { id: "src/app.tsx", name: "app.tsx" },
-                    { id: "src/index.ts", name: "index.ts" },
-                ],
-            },
-            { id: "panda.config", name: "panda.config.ts" },
-            { id: "package.json", name: "package.json" },
-            { id: "renovate.json", name: "renovate.json" },
-            { id: "readme.md", name: "README.md" },
-        ],
-    },
-})
 
 export default PhoneBoothTreeFilter

@@ -17,9 +17,9 @@ class UsageSession(UsageSessionBase, table=True):
     __tablename__: str = "usage_sessions"
     
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    phone_booth_id: uuid.UUID = Field(foreign_key="phonebooth.id")
-    client_id: uuid.UUID = Field(foreign_key="client.id")
-    org_unit_id: uuid.UUID = Field(foreign_key="orgunit.id")
+    phone_booth_id: uuid.UUID = Field(foreign_key="phone_booths.id")
+    client_id: uuid.UUID = Field(foreign_key="clients.id")
+    org_unit_id: uuid.UUID = Field(foreign_key="org_units.id")
     start_time: datetime
     end_time: Optional[datetime] = None
     duration_seconds: Optional[int] = None

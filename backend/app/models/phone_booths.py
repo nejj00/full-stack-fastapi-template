@@ -19,11 +19,11 @@ class PhoneBooth(PhoneBoothBase, table=True):
     __tablename__: str = "phone_booths"
     
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    client_id: Optional[uuid.UUID] = Field(default=None, foreign_key="client.id")
-    org_unit_id: Optional[uuid.UUID] = Field(default=None, foreign_key="orgunit.id") # TODO This field is not needed, remove later
+    client_id: Optional[uuid.UUID] = Field(default=None, foreign_key="clients.id")
+    org_unit_id: Optional[uuid.UUID] = Field(default=None, foreign_key="org_units.id") # TODO This field is not needed, remove later
     name: str
     serial_number: str
-    state_id: Optional[int] = Field(default=0, foreign_key="boothstate.id")
+    state_id: Optional[int] = Field(default=0, foreign_key="booth_states.id")
     last_seen: Optional[datetime] = None
     timezone: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

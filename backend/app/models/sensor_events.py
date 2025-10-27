@@ -19,10 +19,10 @@ class SensorEvent(SensorEventBase, table=True):
     __tablename__: str = "sensor_events"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    sensor_id: uuid.UUID = Field(foreign_key="sensor.id")
-    phone_booth_id: uuid.UUID = Field(foreign_key="phonebooth.id")
-    client_id: uuid.UUID = Field(foreign_key="client.id")
-    org_unit_id: uuid.UUID = Field(foreign_key="orgunit.id")
+    sensor_id: uuid.UUID = Field(foreign_key="sensors.id")
+    phone_booth_id: uuid.UUID = Field(foreign_key="phone_booths.id")
+    client_id: uuid.UUID = Field(foreign_key="clients.id")
+    org_unit_id: uuid.UUID = Field(foreign_key="org_units.id")
     state_id: int
     event_time_utc: datetime
     received_at: datetime = Field(default_factory=datetime.utcnow)

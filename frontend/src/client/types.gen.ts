@@ -69,7 +69,7 @@ export type NewPassword = {
 
 export type OrgUnitCreate = {
     name: string;
-    type?: (string | null);
+    type_id?: (number | null);
     timezone?: (string | null);
     client_id: string;
     parent_id?: (string | null);
@@ -77,7 +77,7 @@ export type OrgUnitCreate = {
 
 export type OrgUnitRead = {
     name: string;
-    type?: (string | null);
+    type_id?: (number | null);
     timezone?: (string | null);
     id: string;
     client_id: string;
@@ -144,6 +144,7 @@ export type SensorCreate = {
     type?: (string | null);
     mqtt_topic?: (string | null);
     status?: string;
+    serial_number: string;
     phone_booth_id: string;
 };
 
@@ -177,6 +178,7 @@ export type SensorRead = {
     type?: (string | null);
     mqtt_topic?: (string | null);
     status?: string;
+    serial_number: string;
     id: string;
     phone_booth_id: string;
     created_at: string;

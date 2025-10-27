@@ -11,7 +11,7 @@ class SensorBase(SQLModel):
     type: Optional[str] = None
     mqtt_topic: Optional[str] = None
     status: str = "active"
-
+    serial_number: str
 
 class Sensor(SensorBase, table=True):
     __tablename__: str = "sensors"
@@ -23,6 +23,7 @@ class Sensor(SensorBase, table=True):
     status: str = Field(default="active")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    serial_number: str = Field(unique=True, max_length=100)
 
 
 class SensorCreate(SensorBase):

@@ -311,16 +311,16 @@ export const OrgUnitCreateSchema = {
             type: 'string',
             title: 'Name'
         },
-        type: {
+        type_id: {
             anyOf: [
                 {
-                    type: 'string'
+                    type: 'integer'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Type'
+            title: 'Type Id'
         },
         timezone: {
             anyOf: [
@@ -362,16 +362,16 @@ export const OrgUnitReadSchema = {
             type: 'string',
             title: 'Name'
         },
-        type: {
+        type_id: {
             anyOf: [
                 {
-                    type: 'string'
+                    type: 'integer'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Type'
+            title: 'Type Id'
         },
         timezone: {
             anyOf: [
@@ -751,6 +751,10 @@ export const SensorCreateSchema = {
             title: 'Status',
             default: 'active'
         },
+        serial_number: {
+            type: 'string',
+            title: 'Serial Number'
+        },
         phone_booth_id: {
             type: 'string',
             format: 'uuid',
@@ -758,7 +762,7 @@ export const SensorCreateSchema = {
         }
     },
     type: 'object',
-    required: ['phone_booth_id'],
+    required: ['serial_number', 'phone_booth_id'],
     title: 'SensorCreate'
 } as const;
 
@@ -899,6 +903,10 @@ export const SensorReadSchema = {
             title: 'Status',
             default: 'active'
         },
+        serial_number: {
+            type: 'string',
+            title: 'Serial Number'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -921,7 +929,7 @@ export const SensorReadSchema = {
         }
     },
     type: 'object',
-    required: ['id', 'phone_booth_id', 'created_at', 'updated_at'],
+    required: ['serial_number', 'id', 'phone_booth_id', 'created_at', 'updated_at'],
     title: 'SensorRead'
 } as const;
 

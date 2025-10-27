@@ -55,6 +55,99 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const BoothStateCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'BoothStateCreate'
+} as const;
+
+export const BoothStateReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'BoothStateRead'
+} as const;
+
+export const ClientCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'ClientCreate'
+} as const;
+
+export const ClientReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'created_at', 'updated_at'],
+    title: 'ClientRead'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -212,6 +305,342 @@ export const NewPasswordSchema = {
     title: 'NewPassword'
 } as const;
 
+export const OrgUnitCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Type'
+        },
+        timezone: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Timezone'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        parent_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Parent Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'client_id'],
+    title: 'OrgUnitCreate'
+} as const;
+
+export const OrgUnitReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Type'
+        },
+        timezone: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Timezone'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        parent_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Parent Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'client_id', 'parent_id', 'created_at', 'updated_at'],
+    title: 'OrgUnitRead'
+} as const;
+
+export const OrgUnitTypeCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'OrgUnitTypeCreate'
+} as const;
+
+export const OrgUnitTypeReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'OrgUnitTypeRead'
+} as const;
+
+export const PhoneBoothCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        serial_number: {
+            type: 'string',
+            title: 'Serial Number'
+        },
+        timezone: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Timezone'
+        },
+        last_seen: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Seen'
+        },
+        state_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'State Id',
+            default: 0
+        },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Org Unit Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'serial_number'],
+    title: 'PhoneBoothCreate'
+} as const;
+
+export const PhoneBoothReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        serial_number: {
+            type: 'string',
+            title: 'Serial Number'
+        },
+        timezone: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Timezone'
+        },
+        last_seen: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Last Seen'
+        },
+        state_id: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'State Id',
+            default: 0
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Org Unit Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['name', 'serial_number', 'id', 'client_id', 'org_unit_id', 'created_at', 'updated_at'],
+    title: 'PhoneBoothRead'
+} as const;
+
 export const PrivateUserCreateSchema = {
     properties: {
         email: {
@@ -235,6 +664,265 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const RoleCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'RoleCreate'
+} as const;
+
+export const RoleReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id', 'created_at'],
+    title: 'RoleRead'
+} as const;
+
+export const SensorCreateSchema = {
+    properties: {
+        type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Type'
+        },
+        mqtt_topic: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Mqtt Topic'
+        },
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'active'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        }
+    },
+    type: 'object',
+    required: ['phone_booth_id'],
+    title: 'SensorCreate'
+} as const;
+
+export const SensorEventCreateSchema = {
+    properties: {
+        state_id: {
+            type: 'integer',
+            title: 'State Id'
+        },
+        event_time_utc: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Event Time Utc'
+        },
+        raw_payload: {
+            anyOf: [
+                {
+                    additionalProperties: true,
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Raw Payload'
+        },
+        sensor_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Sensor Id'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Org Unit Id'
+        }
+    },
+    type: 'object',
+    required: ['state_id', 'event_time_utc', 'sensor_id', 'phone_booth_id', 'client_id', 'org_unit_id'],
+    title: 'SensorEventCreate'
+} as const;
+
+export const SensorEventReadSchema = {
+    properties: {
+        state_id: {
+            type: 'integer',
+            title: 'State Id'
+        },
+        event_time_utc: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Event Time Utc'
+        },
+        raw_payload: {
+            anyOf: [
+                {
+                    additionalProperties: true,
+                    type: 'object'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Raw Payload'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        sensor_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Sensor Id'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Org Unit Id'
+        },
+        received_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Received At'
+        }
+    },
+    type: 'object',
+    required: ['state_id', 'event_time_utc', 'id', 'sensor_id', 'phone_booth_id', 'client_id', 'org_unit_id', 'received_at'],
+    title: 'SensorEventRead'
+} as const;
+
+export const SensorReadSchema = {
+    properties: {
+        type: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Type'
+        },
+        mqtt_topic: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Mqtt Topic'
+        },
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'active'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['id', 'phone_booth_id', 'created_at', 'updated_at'],
+    title: 'SensorRead'
 } as const;
 
 export const TokenSchema = {
@@ -272,6 +960,118 @@ export const UpdatePasswordSchema = {
     type: 'object',
     required: ['current_password', 'new_password'],
     title: 'UpdatePassword'
+} as const;
+
+export const UsageSessionCreateSchema = {
+    properties: {
+        start_time: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Start Time'
+        },
+        end_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'End Time'
+        },
+        duration_seconds: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Duration Seconds'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Org Unit Id'
+        }
+    },
+    type: 'object',
+    required: ['start_time', 'phone_booth_id', 'client_id', 'org_unit_id'],
+    title: 'UsageSessionCreate'
+} as const;
+
+export const UsageSessionReadSchema = {
+    properties: {
+        start_time: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Start Time'
+        },
+        end_time: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'End Time'
+        },
+        duration_seconds: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Duration Seconds'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        phone_booth_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Phone Booth Id'
+        },
+        client_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Client Id'
+        },
+        org_unit_id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Org Unit Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        }
+    },
+    type: 'object',
+    required: ['start_time', 'id', 'phone_booth_id', 'client_id', 'org_unit_id', 'created_at'],
+    title: 'UsageSessionRead'
 } as const;
 
 export const UserCreateSchema = {

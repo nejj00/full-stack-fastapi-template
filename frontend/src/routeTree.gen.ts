@@ -18,6 +18,7 @@ import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutMqttItemsRouteImport } from './routes/_layout/mqtt-items'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
+import { Route as LayoutBoothCalendarRouteImport } from './routes/_layout/booth-calendar'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 
 const SignupRoute = SignupRouteImport.update({
@@ -64,6 +65,11 @@ const LayoutItemsRoute = LayoutItemsRouteImport.update({
   path: '/items',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutBoothCalendarRoute = LayoutBoothCalendarRouteImport.update({
+  id: '/booth-calendar',
+  path: '/booth-calendar',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/booth-calendar': typeof LayoutBoothCalendarRoute
   '/items': typeof LayoutItemsRoute
   '/mqtt-items': typeof LayoutMqttItemsRoute
   '/settings': typeof LayoutSettingsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
+  '/booth-calendar': typeof LayoutBoothCalendarRoute
   '/items': typeof LayoutItemsRoute
   '/mqtt-items': typeof LayoutMqttItemsRoute
   '/settings': typeof LayoutSettingsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/booth-calendar': typeof LayoutBoothCalendarRoute
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/mqtt-items': typeof LayoutMqttItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/booth-calendar'
     | '/items'
     | '/mqtt-items'
     | '/settings'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/booth-calendar'
     | '/items'
     | '/mqtt-items'
     | '/settings'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/booth-calendar'
     | '/_layout/items'
     | '/_layout/mqtt-items'
     | '/_layout/settings'
@@ -215,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutItemsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/booth-calendar': {
+      id: '/_layout/booth-calendar'
+      path: '/booth-calendar'
+      fullPath: '/booth-calendar'
+      preLoaderRoute: typeof LayoutBoothCalendarRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -227,6 +246,7 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutBoothCalendarRoute: typeof LayoutBoothCalendarRoute
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutMqttItemsRoute: typeof LayoutMqttItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
@@ -235,6 +255,7 @@ interface LayoutRouteChildren {
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
+  LayoutBoothCalendarRoute: LayoutBoothCalendarRoute,
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutMqttItemsRoute: LayoutMqttItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,

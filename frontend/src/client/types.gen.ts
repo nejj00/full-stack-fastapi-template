@@ -9,6 +9,29 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type BoothStateCreate = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
+export type BoothStateRead = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
+export type ClientCreate = {
+    name: string;
+};
+
+export type ClientRead = {
+    name: string;
+    id: string;
+    created_at: string;
+    updated_at: string;
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -44,11 +67,120 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type OrgUnitCreate = {
+    name: string;
+    type?: (string | null);
+    timezone?: (string | null);
+    client_id: string;
+    parent_id?: (string | null);
+};
+
+export type OrgUnitRead = {
+    name: string;
+    type?: (string | null);
+    timezone?: (string | null);
+    id: string;
+    client_id: string;
+    parent_id: (string | null);
+    created_at: string;
+    updated_at: string;
+};
+
+export type OrgUnitTypeCreate = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
+export type OrgUnitTypeRead = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
+export type PhoneBoothCreate = {
+    name: string;
+    serial_number: string;
+    timezone?: (string | null);
+    last_seen?: (string | null);
+    state_id?: (number | null);
+    client_id?: (string | null);
+    org_unit_id?: (string | null);
+};
+
+export type PhoneBoothRead = {
+    name: string;
+    serial_number: string;
+    timezone?: (string | null);
+    last_seen?: (string | null);
+    state_id?: (number | null);
+    id: string;
+    client_id: (string | null);
+    org_unit_id: (string | null);
+    created_at: string;
+    updated_at: string;
+};
+
 export type PrivateUserCreate = {
     email: string;
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type RoleCreate = {
+    name: string;
+    description?: (string | null);
+};
+
+export type RoleRead = {
+    name: string;
+    description?: (string | null);
+    id: string;
+    created_at: string;
+};
+
+export type SensorCreate = {
+    type?: (string | null);
+    mqtt_topic?: (string | null);
+    status?: string;
+    phone_booth_id: string;
+};
+
+export type SensorEventCreate = {
+    state_id: number;
+    event_time_utc: string;
+    raw_payload?: ({
+    [key: string]: unknown;
+} | null);
+    sensor_id: string;
+    phone_booth_id: string;
+    client_id: string;
+    org_unit_id: string;
+};
+
+export type SensorEventRead = {
+    state_id: number;
+    event_time_utc: string;
+    raw_payload?: ({
+    [key: string]: unknown;
+} | null);
+    id: string;
+    sensor_id: string;
+    phone_booth_id: string;
+    client_id: string;
+    org_unit_id: string;
+    received_at: string;
+};
+
+export type SensorRead = {
+    type?: (string | null);
+    mqtt_topic?: (string | null);
+    status?: string;
+    id: string;
+    phone_booth_id: string;
+    created_at: string;
+    updated_at: string;
 };
 
 export type Token = {
@@ -59,6 +191,26 @@ export type Token = {
 export type UpdatePassword = {
     current_password: string;
     new_password: string;
+};
+
+export type UsageSessionCreate = {
+    start_time: string;
+    end_time?: (string | null);
+    duration_seconds?: (number | null);
+    phone_booth_id: string;
+    client_id: string;
+    org_unit_id: string;
+};
+
+export type UsageSessionRead = {
+    start_time: string;
+    end_time?: (string | null);
+    duration_seconds?: (number | null);
+    id: string;
+    phone_booth_id: string;
+    client_id: string;
+    org_unit_id: string;
+    created_at: string;
 };
 
 export type UserCreate = {
@@ -106,6 +258,60 @@ export type ValidationError = {
     msg: string;
     type: string;
 };
+
+export type BoothStatesReadBoothStatesResponse = (Array<BoothStateRead>);
+
+export type BoothStatesCreateBoothStateData = {
+    requestBody: BoothStateCreate;
+};
+
+export type BoothStatesCreateBoothStateResponse = (BoothStateRead);
+
+export type BoothStatesReadBoothStateData = {
+    id: number;
+};
+
+export type BoothStatesReadBoothStateResponse = (BoothStateRead);
+
+export type BoothStatesUpdateBoothStateData = {
+    id: number;
+    requestBody: BoothStateCreate;
+};
+
+export type BoothStatesUpdateBoothStateResponse = (BoothStateRead);
+
+export type BoothStatesDeleteBoothStateData = {
+    id: number;
+};
+
+export type BoothStatesDeleteBoothStateResponse = (Message);
+
+export type ClientsReadClientsResponse = (Array<ClientRead>);
+
+export type ClientsCreateClientData = {
+    requestBody: ClientCreate;
+};
+
+export type ClientsCreateClientResponse = (ClientRead);
+
+export type ClientsReadClientData = {
+    id: string;
+};
+
+export type ClientsReadClientResponse = (ClientRead);
+
+export type ClientsUpdateClientData = {
+    id: string;
+    requestBody: ClientCreate;
+};
+
+export type ClientsUpdateClientResponse = (ClientRead);
+
+export type ClientsDeleteClientData = {
+    id: string;
+};
+
+export type ClientsDeleteClientResponse = (Message);
 
 export type ItemsReadItemsData = {
     limit?: number;
@@ -165,11 +371,210 @@ export type LoginRecoverPasswordHtmlContentData = {
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
 
+export type OrgUnitsReadOrgUnitsResponse = (Array<OrgUnitRead>);
+
+export type OrgUnitsCreateOrgUnitData = {
+    requestBody: OrgUnitCreate;
+};
+
+export type OrgUnitsCreateOrgUnitResponse = (OrgUnitRead);
+
+export type OrgUnitsReadOrgUnitData = {
+    id: string;
+};
+
+export type OrgUnitsReadOrgUnitResponse = (OrgUnitRead);
+
+export type OrgUnitsUpdateOrgUnitData = {
+    id: string;
+    requestBody: OrgUnitCreate;
+};
+
+export type OrgUnitsUpdateOrgUnitResponse = (OrgUnitRead);
+
+export type OrgUnitsDeleteOrgUnitData = {
+    id: string;
+};
+
+export type OrgUnitsDeleteOrgUnitResponse = (Message);
+
+export type OrgUnitTypesReadOrgUnitTypesResponse = (Array<OrgUnitTypeRead>);
+
+export type OrgUnitTypesCreateOrgUnitTypeData = {
+    requestBody: OrgUnitTypeCreate;
+};
+
+export type OrgUnitTypesCreateOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesReadOrgUnitTypeData = {
+    id: number;
+};
+
+export type OrgUnitTypesReadOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesUpdateOrgUnitTypeData = {
+    id: number;
+    requestBody: OrgUnitTypeCreate;
+};
+
+export type OrgUnitTypesUpdateOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesDeleteOrgUnitTypeData = {
+    id: number;
+};
+
+export type OrgUnitTypesDeleteOrgUnitTypeResponse = (Message);
+
+export type PhoneBoothsReadPhoneBoothsData = {
+    clientId?: (string | null);
+    limit?: number;
+    skip?: number;
+};
+
+export type PhoneBoothsReadPhoneBoothsResponse = (Array<PhoneBoothRead>);
+
+export type PhoneBoothsCreatePhoneBoothData = {
+    requestBody: PhoneBoothCreate;
+};
+
+export type PhoneBoothsCreatePhoneBoothResponse = (PhoneBoothRead);
+
+export type PhoneBoothsReadBusyPhoneBoothsData = {
+    clientId?: (string | null);
+    limit?: number;
+    skip?: number;
+};
+
+export type PhoneBoothsReadBusyPhoneBoothsResponse = (Array<PhoneBoothRead>);
+
+export type PhoneBoothsReadPhoneBoothData = {
+    id: string;
+};
+
+export type PhoneBoothsReadPhoneBoothResponse = (PhoneBoothRead);
+
+export type PhoneBoothsUpdatePhoneBoothData = {
+    id: string;
+    requestBody: PhoneBoothCreate;
+};
+
+export type PhoneBoothsUpdatePhoneBoothResponse = (PhoneBoothRead);
+
+export type PhoneBoothsDeletePhoneBoothData = {
+    id: string;
+};
+
+export type PhoneBoothsDeletePhoneBoothResponse = (Message);
+
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type RolesReadRolesResponse = (Array<RoleRead>);
+
+export type RolesCreateRoleData = {
+    requestBody: RoleCreate;
+};
+
+export type RolesCreateRoleResponse = (RoleRead);
+
+export type RolesReadRoleData = {
+    id: string;
+};
+
+export type RolesReadRoleResponse = (RoleRead);
+
+export type RolesUpdateRoleData = {
+    id: string;
+    requestBody: RoleCreate;
+};
+
+export type RolesUpdateRoleResponse = (RoleRead);
+
+export type RolesDeleteRoleData = {
+    id: string;
+};
+
+export type RolesDeleteRoleResponse = (Message);
+
+export type SensorEventsReadSensorEventsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type SensorEventsReadSensorEventsResponse = (Array<SensorEventRead>);
+
+export type SensorEventsCreateSensorEventData = {
+    requestBody: SensorEventCreate;
+};
+
+export type SensorEventsCreateSensorEventResponse = (SensorEventRead);
+
+export type SensorEventsReadSensorEventData = {
+    id: string;
+};
+
+export type SensorEventsReadSensorEventResponse = (SensorEventRead);
+
+export type SensorEventsDeleteSensorEventData = {
+    id: string;
+};
+
+export type SensorEventsDeleteSensorEventResponse = (Message);
+
+export type SensorsReadSensorsResponse = (Array<SensorRead>);
+
+export type SensorsCreateSensorData = {
+    requestBody: SensorCreate;
+};
+
+export type SensorsCreateSensorResponse = (SensorRead);
+
+export type SensorsReadSensorData = {
+    id: string;
+};
+
+export type SensorsReadSensorResponse = (SensorRead);
+
+export type SensorsUpdateSensorData = {
+    id: string;
+    requestBody: SensorCreate;
+};
+
+export type SensorsUpdateSensorResponse = (SensorRead);
+
+export type SensorsDeleteSensorData = {
+    id: string;
+};
+
+export type SensorsDeleteSensorResponse = (Message);
+
+export type UsageSessionsReadUsageSessionsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type UsageSessionsReadUsageSessionsResponse = (Array<UsageSessionRead>);
+
+export type UsageSessionsCreateUsageSessionData = {
+    requestBody: UsageSessionCreate;
+};
+
+export type UsageSessionsCreateUsageSessionResponse = (UsageSessionRead);
+
+export type UsageSessionsReadUsageSessionData = {
+    id: string;
+};
+
+export type UsageSessionsReadUsageSessionResponse = (UsageSessionRead);
+
+export type UsageSessionsDeleteUsageSessionData = {
+    id: string;
+};
+
+export type UsageSessionsDeleteUsageSessionResponse = (Message);
 
 export type UsersReadUsersData = {
     limit?: number;

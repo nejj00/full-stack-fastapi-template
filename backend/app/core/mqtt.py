@@ -9,7 +9,7 @@ from sqlmodel import Session
 from app.core.config import settings
 from app.crud import create_item
 from app.core.db import engine
-from app.models import ItemCreate
+from app.models.item_model import ItemCreate
 import logging
 
 logging.basicConfig(level=logging.INFO)

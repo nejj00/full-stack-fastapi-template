@@ -130,12 +130,16 @@ function CalendarView() {
 }
 
 function BoothCalendar() {
+  const handleCheckedChange = (checkedItems: string[]) => {
+    console.log("Checked items in Booth Calendar:", checkedItems)
+  }
+
   return (
     <Container maxW="full" pt={12}>
       <Heading size="lg" mb={4}>
         Busy Phone Booths
       </Heading>
-      <PhoneBoothTreeFilter />
+      <PhoneBoothTreeFilter onCheckedChange={handleCheckedChange} />
       <BusyPhoneBoothsList />
       <CalendarView />
     </Container>

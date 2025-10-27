@@ -6,6 +6,10 @@ import {
 } from "@chakra-ui/react"
 import { LuFile, LuFolder } from "react-icons/lu"
 
+interface PhoneBoothTreeFilterProps {
+    onCheckedChange?: (checkedItems: string[]) => void
+}
+
 const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     const nodeState = useTreeViewNodeContext()
     return (
@@ -24,14 +28,16 @@ const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     )
 }
 
-const PhoneBoothTreeFilter = () => {
-    // Handle check state changes
+const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) => {
     return (
         <TreeView.Root
             collection={collection}
             maxW="sm"
             defaultCheckedValue={[]}
-            onCheckedChange={(details) => console.log(details.checkedValue)}
+            onCheckedChange={(details) => {
+                console.log("Checked in TreeView:", details.checkedValue)
+                onCheckedChange?.(details.checkedValue) // 👈 send data to parent
+            }}
         >
             <TreeView.Label>Tree</TreeView.Label>
             <TreeView.Tree>

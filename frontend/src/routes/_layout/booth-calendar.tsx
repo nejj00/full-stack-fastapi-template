@@ -11,6 +11,7 @@ function getBusyPhoneBoothsQuery() {
   return {
     queryKey: ["busyPhoneBooths"],
     queryFn: () => PhoneBoothsService.readBusyPhoneBooths({ skip: 0, limit: 100 }),
+    refetchInterval: 10000, // Refetch every 10 seconds
   }
 }
 
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/_layout/booth-calendar")({
 function BusyPhoneBoothsList() {
   const { data, isLoading, isError, error } = useQuery(getBusyPhoneBoothsQuery())
 
-  if (isLoading) return <Spinner/>
+  if (isLoading) return <Spinner />
   if (isError) return <Text color="red.500">Error: {error.message}</Text>
 
   const booths = data || []
@@ -49,8 +50,35 @@ function BusyPhoneBoothsList() {
 }
 
 function CalendarView() {
-  
-  
+  const { data, isLoading, isError, error } = useQuery(getBusyPhoneBoothsQuery())
+
+  if (isLoading) {
+    return (
+      <div style={{ marginTop: '40px', textAlign: 'center' }}>
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div style={{ marginTop: '40px', textAlign: 'center' }}>
+        <Text color="red.500">Error loading calendar: {error.message}</Text>
+      </div>
+    )
+  }
+
+  const booths = data || []
+  const now = new Date().toISOString()
+
+  // Transform booth data → FullCalendar event format
+  const events = booths.map((booth: any) => ({
+    id: booth.id,
+    title: booth.name || 'Unknown Booth',
+    start: booth.updated_at, // when it was last busy
+    end: now, // still busy until now
+  }))
+
   return (
     <div style={{ marginTop: '40px' }}>
       <FullCalendar
@@ -61,14 +89,17 @@ function CalendarView() {
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         }}
         initialView='dayGridMonth'
-        editable={true}
-        selectable={true}
-        selectMirror={true}
+        editable={false}
+        selectable={false}
+        selectMirror={false}
         dayMaxEvents={true}
         weekends={true}
+        events={events} // 👈 dynamically injected events
+        eventColor="#3182ce"
+        eventDisplay="block"
+        height="auto"
       />
     </div>
-    
   )
 }
 

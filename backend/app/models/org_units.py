@@ -9,7 +9,7 @@ from sqlmodel import Field, SQLModel
 
 class OrgUnitBase(SQLModel):
     name: str
-    type: Optional[str] = None
+    type_id: Optional[int] = None
     timezone: Optional[str] = None
 
 

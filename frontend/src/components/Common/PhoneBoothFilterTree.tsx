@@ -181,7 +181,7 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
                 onCheckedChange?.(details.checkedValue)
             }}
         >
-            <TreeView.Label>Phone Booths</TreeView.Label>
+            <TreeView.Label>Phone Booth Filter</TreeView.Label>
             <TreeView.Tree>
                 <TreeView.Node
                     render={({ node, nodeState }) =>

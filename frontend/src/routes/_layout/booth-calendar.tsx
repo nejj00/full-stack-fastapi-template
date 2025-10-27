@@ -1,4 +1,4 @@
-import { Container, Heading, List, Spinner, Text } from "@chakra-ui/react"
+import { Container, Heading, Spinner, Text } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { PhoneBoothsService } from "@/client"
 import { useQuery } from "@tanstack/react-query"
@@ -25,33 +25,6 @@ function getBusyPhoneBoothsQuery() {
 export const Route = createFileRoute("/_layout/booth-calendar")({
   component: BoothCalendar,
 })
-
-// ---------------- LIST COMPONENT ----------------
-
-function BusyPhoneBoothsList({ booths }: { booths: any[] }) {
-  if (!booths) return <Spinner />
-
-  if (booths.length === 0) {
-    return <Text>No busy phone booths match the selected filters.</Text>
-  }
-
-  return (
-    <List.Root>
-      {booths.map((booth: any) => (
-        <List.Item
-          key={booth.id}
-          border="1px solid"
-          borderColor="gray.200"
-          p={2}
-          borderRadius="md"
-        >
-          <Text fontWeight="bold">{booth.name || `Booth #${booth.id}`}</Text>
-          {booth.location && <Text fontSize="sm">Location: {booth.location}</Text>}
-        </List.Item>
-      ))}
-    </List.Root>
-  )
-}
 
 // ---------------- CALENDAR COMPONENT ----------------
 
@@ -131,7 +104,6 @@ function BoothCalendar() {
 
       <PhoneBoothTreeFilter onCheckedChange={setCheckedItems} />
 
-      <BusyPhoneBoothsList booths={filteredBooths} />
       <CalendarView booths={filteredBooths} />
     </Container>
   )

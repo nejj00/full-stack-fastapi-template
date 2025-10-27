@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { BoothStatesReadBoothStatesResponse, BoothStatesCreateBoothStateData, BoothStatesCreateBoothStateResponse, BoothStatesReadBoothStateData, BoothStatesReadBoothStateResponse, BoothStatesUpdateBoothStateData, BoothStatesUpdateBoothStateResponse, BoothStatesDeleteBoothStateData, BoothStatesDeleteBoothStateResponse, ClientsReadClientsResponse, ClientsCreateClientData, ClientsCreateClientResponse, ClientsReadClientData, ClientsReadClientResponse, ClientsUpdateClientData, ClientsUpdateClientResponse, ClientsDeleteClientData, ClientsDeleteClientResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, OrgUnitsReadOrgUnitsResponse, OrgUnitsCreateOrgUnitData, OrgUnitsCreateOrgUnitResponse, OrgUnitsReadOrgUnitData, OrgUnitsReadOrgUnitResponse, OrgUnitsUpdateOrgUnitData, OrgUnitsUpdateOrgUnitResponse, OrgUnitsDeleteOrgUnitData, OrgUnitsDeleteOrgUnitResponse, PhoneBoothsReadPhoneBoothsData, PhoneBoothsReadPhoneBoothsResponse, PhoneBoothsCreatePhoneBoothData, PhoneBoothsCreatePhoneBoothResponse, PhoneBoothsReadBusyPhoneBoothsData, PhoneBoothsReadBusyPhoneBoothsResponse, PhoneBoothsReadPhoneBoothData, PhoneBoothsReadPhoneBoothResponse, PhoneBoothsUpdatePhoneBoothData, PhoneBoothsUpdatePhoneBoothResponse, PhoneBoothsDeletePhoneBoothData, PhoneBoothsDeletePhoneBoothResponse, PrivateCreateUserData, PrivateCreateUserResponse, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, SensorEventsReadSensorEventsData, SensorEventsReadSensorEventsResponse, SensorEventsCreateSensorEventData, SensorEventsCreateSensorEventResponse, SensorEventsReadSensorEventData, SensorEventsReadSensorEventResponse, SensorEventsDeleteSensorEventData, SensorEventsDeleteSensorEventResponse, SensorsReadSensorsResponse, SensorsCreateSensorData, SensorsCreateSensorResponse, SensorsReadSensorData, SensorsReadSensorResponse, SensorsUpdateSensorData, SensorsUpdateSensorResponse, SensorsDeleteSensorData, SensorsDeleteSensorResponse, UsageSessionsReadUsageSessionsData, UsageSessionsReadUsageSessionsResponse, UsageSessionsCreateUsageSessionData, UsageSessionsCreateUsageSessionResponse, UsageSessionsReadUsageSessionData, UsageSessionsReadUsageSessionResponse, UsageSessionsDeleteUsageSessionData, UsageSessionsDeleteUsageSessionResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { BoothStatesReadBoothStatesResponse, BoothStatesCreateBoothStateData, BoothStatesCreateBoothStateResponse, BoothStatesReadBoothStateData, BoothStatesReadBoothStateResponse, BoothStatesUpdateBoothStateData, BoothStatesUpdateBoothStateResponse, BoothStatesDeleteBoothStateData, BoothStatesDeleteBoothStateResponse, ClientsReadClientsResponse, ClientsCreateClientData, ClientsCreateClientResponse, ClientsReadClientData, ClientsReadClientResponse, ClientsUpdateClientData, ClientsUpdateClientResponse, ClientsDeleteClientData, ClientsDeleteClientResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, OrgUnitsReadOrgUnitsResponse, OrgUnitsCreateOrgUnitData, OrgUnitsCreateOrgUnitResponse, OrgUnitsReadOrgUnitData, OrgUnitsReadOrgUnitResponse, OrgUnitsUpdateOrgUnitData, OrgUnitsUpdateOrgUnitResponse, OrgUnitsDeleteOrgUnitData, OrgUnitsDeleteOrgUnitResponse, OrgUnitTypesReadOrgUnitTypesResponse, OrgUnitTypesCreateOrgUnitTypeData, OrgUnitTypesCreateOrgUnitTypeResponse, OrgUnitTypesReadOrgUnitTypeData, OrgUnitTypesReadOrgUnitTypeResponse, OrgUnitTypesUpdateOrgUnitTypeData, OrgUnitTypesUpdateOrgUnitTypeResponse, OrgUnitTypesDeleteOrgUnitTypeData, OrgUnitTypesDeleteOrgUnitTypeResponse, PhoneBoothsReadPhoneBoothsData, PhoneBoothsReadPhoneBoothsResponse, PhoneBoothsCreatePhoneBoothData, PhoneBoothsCreatePhoneBoothResponse, PhoneBoothsReadBusyPhoneBoothsData, PhoneBoothsReadBusyPhoneBoothsResponse, PhoneBoothsReadPhoneBoothData, PhoneBoothsReadPhoneBoothResponse, PhoneBoothsUpdatePhoneBoothData, PhoneBoothsUpdatePhoneBoothResponse, PhoneBoothsDeletePhoneBoothData, PhoneBoothsDeletePhoneBoothResponse, PrivateCreateUserData, PrivateCreateUserResponse, RolesReadRolesResponse, RolesCreateRoleData, RolesCreateRoleResponse, RolesReadRoleData, RolesReadRoleResponse, RolesUpdateRoleData, RolesUpdateRoleResponse, RolesDeleteRoleData, RolesDeleteRoleResponse, SensorEventsReadSensorEventsData, SensorEventsReadSensorEventsResponse, SensorEventsCreateSensorEventData, SensorEventsCreateSensorEventResponse, SensorEventsReadSensorEventData, SensorEventsReadSensorEventResponse, SensorEventsDeleteSensorEventData, SensorEventsDeleteSensorEventResponse, SensorsReadSensorsResponse, SensorsCreateSensorData, SensorsCreateSensorResponse, SensorsReadSensorData, SensorsReadSensorResponse, SensorsUpdateSensorData, SensorsUpdateSensorResponse, SensorsDeleteSensorData, SensorsDeleteSensorResponse, UsageSessionsReadUsageSessionsData, UsageSessionsReadUsageSessionsResponse, UsageSessionsCreateUsageSessionData, UsageSessionsCreateUsageSessionResponse, UsageSessionsReadUsageSessionData, UsageSessionsReadUsageSessionResponse, UsageSessionsDeleteUsageSessionData, UsageSessionsDeleteUsageSessionResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class BoothStatesService {
     /**
@@ -493,6 +493,102 @@ export class OrgUnitsService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/org-units/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class OrgUnitTypesService {
+    /**
+     * Read Org Unit Types
+     * @returns OrgUnitTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static readOrgUnitTypes(): CancelablePromise<OrgUnitTypesReadOrgUnitTypesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/org-unit-types/'
+        });
+    }
+    
+    /**
+     * Create Org Unit Type
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns OrgUnitTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static createOrgUnitType(data: OrgUnitTypesCreateOrgUnitTypeData): CancelablePromise<OrgUnitTypesCreateOrgUnitTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/org-unit-types/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read Org Unit Type
+     * @param data The data for the request.
+     * @param data.id
+     * @returns OrgUnitTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static readOrgUnitType(data: OrgUnitTypesReadOrgUnitTypeData): CancelablePromise<OrgUnitTypesReadOrgUnitTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/org-unit-types/{id}',
+            path: {
+                id: data.id
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Org Unit Type
+     * @param data The data for the request.
+     * @param data.id
+     * @param data.requestBody
+     * @returns OrgUnitTypeRead Successful Response
+     * @throws ApiError
+     */
+    public static updateOrgUnitType(data: OrgUnitTypesUpdateOrgUnitTypeData): CancelablePromise<OrgUnitTypesUpdateOrgUnitTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/org-unit-types/{id}',
+            path: {
+                id: data.id
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Org Unit Type
+     * @param data The data for the request.
+     * @param data.id
+     * @returns Message Successful Response
+     * @throws ApiError
+     */
+    public static deleteOrgUnitType(data: OrgUnitTypesDeleteOrgUnitTypeData): CancelablePromise<OrgUnitTypesDeleteOrgUnitTypeResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/org-unit-types/{id}',
             path: {
                 id: data.id
             },

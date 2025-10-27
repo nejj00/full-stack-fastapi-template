@@ -422,6 +422,60 @@ export const OrgUnitReadSchema = {
     title: 'OrgUnitRead'
 } as const;
 
+export const OrgUnitTypeCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'OrgUnitTypeCreate'
+} as const;
+
+export const OrgUnitTypeReadSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'integer',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['name', 'id'],
+    title: 'OrgUnitTypeRead'
+} as const;
+
 export const PhoneBoothCreateSchema = {
     properties: {
         name: {

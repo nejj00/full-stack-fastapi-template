@@ -86,6 +86,18 @@ export type OrgUnitRead = {
     updated_at: string;
 };
 
+export type OrgUnitTypeCreate = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
+export type OrgUnitTypeRead = {
+    name: string;
+    description?: (string | null);
+    id: number;
+};
+
 export type PhoneBoothCreate = {
     name: string;
     serial_number: string;
@@ -385,6 +397,33 @@ export type OrgUnitsDeleteOrgUnitData = {
 };
 
 export type OrgUnitsDeleteOrgUnitResponse = (Message);
+
+export type OrgUnitTypesReadOrgUnitTypesResponse = (Array<OrgUnitTypeRead>);
+
+export type OrgUnitTypesCreateOrgUnitTypeData = {
+    requestBody: OrgUnitTypeCreate;
+};
+
+export type OrgUnitTypesCreateOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesReadOrgUnitTypeData = {
+    id: number;
+};
+
+export type OrgUnitTypesReadOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesUpdateOrgUnitTypeData = {
+    id: number;
+    requestBody: OrgUnitTypeCreate;
+};
+
+export type OrgUnitTypesUpdateOrgUnitTypeResponse = (OrgUnitTypeRead);
+
+export type OrgUnitTypesDeleteOrgUnitTypeData = {
+    id: number;
+};
+
+export type OrgUnitTypesDeleteOrgUnitTypeResponse = (Message);
 
 export type PhoneBoothsReadPhoneBoothsData = {
     clientId?: (string | null);

@@ -7,6 +7,7 @@ from app.api.routes import (
     users,
     utils,
     clients,
+    org_unit_types,
     org_units,
     roles,
     booth_states,
@@ -23,6 +24,7 @@ api_router.include_router(users.router)
 api_router.include_router(utils.router)
 api_router.include_router(items.router)
 api_router.include_router(clients.router)
+api_router.include_router(org_unit_types.router)
 api_router.include_router(org_units.router)
 api_router.include_router(roles.router)
 api_router.include_router(booth_states.router)

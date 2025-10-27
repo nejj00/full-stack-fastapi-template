@@ -2,31 +2,23 @@ import { Container, Heading, List, Spinner, Text } from "@chakra-ui/react"
 import { createFileRoute } from "@tanstack/react-router"
 import { PhoneBoothsService } from "@/client"
 import { useQuery } from "@tanstack/react-query"
+import { useState, useMemo } from "react"
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
-// import { dummyEvents, DUMMY_EVENTS_6_TO_8 } from "@/data/dummyEvents"
 import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 
-
-// 🎨 A simple set of colors to cycle through for events
 const EVENT_COLORS = [
-  "#3182ce", // blue
-  "#38a169", // green
-  "#d69e2e", // yellow
-  "#dd6b20", // orange
-  "#805ad5", // purple
-  "#e53e3e", // red
-  "#319795", // teal
-  "#718096", // gray
+  "#3182ce", "#38a169", "#d69e2e", "#dd6b20",
+  "#805ad5", "#e53e3e", "#319795", "#718096",
 ]
 
 function getBusyPhoneBoothsQuery() {
   return {
     queryKey: ["busyPhoneBooths"],
     queryFn: () => PhoneBoothsService.readBusyPhoneBooths({ skip: 0, limit: 100 }),
-    refetchInterval: 10000, // Refetch every 10 seconds
+    refetchInterval: 10000,
   }
 }
 
@@ -34,16 +26,13 @@ export const Route = createFileRoute("/_layout/booth-calendar")({
   component: BoothCalendar,
 })
 
-function BusyPhoneBoothsList() {
-  const { data, isLoading, isError, error } = useQuery(getBusyPhoneBoothsQuery())
+// ---------------- LIST COMPONENT ----------------
 
-  if (isLoading) return <Spinner />
-  if (isError) return <Text color="red.500">Error: {error.message}</Text>
-
-  const booths = data || []
+function BusyPhoneBoothsList({ booths }: { booths: any[] }) {
+  if (!booths) return <Spinner />
 
   if (booths.length === 0) {
-    return <Text>No busy phone booths right now.</Text>
+    return <Text>No busy phone booths match the selected filters.</Text>
   }
 
   return (
@@ -64,45 +53,25 @@ function BusyPhoneBoothsList() {
   )
 }
 
-function CalendarView() {
-  const { data, isLoading, isError, error } = useQuery(getBusyPhoneBoothsQuery())
+// ---------------- CALENDAR COMPONENT ----------------
 
-  if (isLoading) {
-    return (
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
-        <Text color="red.500">Error loading calendar: {error.message}</Text>
-      </div>
-    )
-  }
-
-  const booths = data || []
+function CalendarView({ booths }: { booths: any[] }) {
   const now = new Date().toISOString()
 
-  // Helper: deterministic color picker based on booth ID
   const getColorForBooth = (boothId: string) => {
     let hash = 0
     for (let i = 0; i < boothId.length; i++) {
       hash = boothId.charCodeAt(i) + ((hash << 5) - hash)
     }
-    const colorIndex = Math.abs(hash) % EVENT_COLORS.length
-    return EVENT_COLORS[colorIndex]
+    return EVENT_COLORS[Math.abs(hash) % EVENT_COLORS.length]
   }
 
-  // Transform booth data → FullCalendar event format
   const events = booths.map((booth: any) => ({
     id: booth.id,
     title: booth.name || 'Unknown Booth',
     start: booth.updated_at,
     end: now,
-    color: getColorForBooth(booth.id), // 👈 unique color per booth
+    color: getColorForBooth(booth.id),
   }))
 
   return (
@@ -115,13 +84,7 @@ function CalendarView() {
           right: 'dayGridMonth,timeGridWeek,timeGridDay',
         }}
         initialView='dayGridMonth'
-        editable={false}
-        selectable={false}
-        selectMirror={false}
-        dayMaxEvents={true}
-        weekends={true}
-        // events={[...dummyEvents, ...DUMMY_EVENTS_6_TO_8]} // test events
-        events={events} // 👈 dynamically injected events with colors
+        events={events}
         eventDisplay="block"
         height="auto"
       />
@@ -129,9 +92,35 @@ function CalendarView() {
   )
 }
 
+// ---------------- MAIN COMPONENT ----------------
+
 function BoothCalendar() {
-  const handleCheckedChange = (checkedItems: string[]) => {
-    console.log("Checked items in Booth Calendar:", checkedItems)
+  const [checkedItems, setCheckedItems] = useState<string[]>([])
+
+  const { data: allBooths, isLoading, isError, error } = useQuery(getBusyPhoneBoothsQuery())
+
+  const filteredBooths = useMemo(() => {
+    if (!allBooths) return []
+    if (checkedItems.length === 0) return allBooths // nothing checked = show all
+
+    // filter: only booths whose ID is in checkedItems
+    return allBooths.filter((booth: any) => checkedItems.includes(booth.id))
+  }, [allBooths, checkedItems])
+
+  if (isLoading) {
+    return (
+      <Container maxW="full" pt={12} textAlign="center">
+        <Spinner />
+      </Container>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Container maxW="full" pt={12} textAlign="center">
+        <Text color="red.500">Error: {error.message}</Text>
+      </Container>
+    )
   }
 
   return (
@@ -139,9 +128,13 @@ function BoothCalendar() {
       <Heading size="lg" mb={4}>
         Busy Phone Booths
       </Heading>
-      <PhoneBoothTreeFilter onCheckedChange={handleCheckedChange} />
-      <BusyPhoneBoothsList />
-      <CalendarView />
+
+      <PhoneBoothTreeFilter onCheckedChange={setCheckedItems} />
+
+      <BusyPhoneBoothsList booths={filteredBooths} />
+      <CalendarView booths={filteredBooths} />
     </Container>
   )
 }
+
+export default BoothCalendar

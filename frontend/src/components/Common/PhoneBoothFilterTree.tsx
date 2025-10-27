@@ -1,28 +1,20 @@
+import { ClientsService, OrgUnitsService, PhoneBoothsService } from "@/client"
 import {
     Checkmark,
     TreeView,
     createTreeCollection,
     useTreeViewNodeContext,
     Spinner,
-    Center,
+    VStack,
+    Text,
 } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { LuFile, LuFolder } from "react-icons/lu"
-import { ClientsService, OrgUnitsService, PhoneBoothsService } from "@/client"
 
 interface PhoneBoothTreeFilterProps {
     onCheckedChange?: (checkedItems: string[]) => void
 }
 
-interface Node {
-    id: string
-    name: string
-    children?: Node[]
-}
-
-/* -------------------------------
-    Queries
--------------------------------- */
 function getClientsQuery() {
     return {
         queryKey: ["clients"],
@@ -44,50 +36,6 @@ function getPhoneBoothsQuery() {
     }
 }
 
-/* -------------------------------
-    Helper: build hierarchical tree
--------------------------------- */
-function buildTree(clients: any[], orgUnits: any[]): Node[] {
-    const tree: Node[] = []
-
-    for (const client of clients) {
-        // Group org units belonging to this client
-        const clientUnits = orgUnits.filter(
-            (unit) => unit.client_id === client.id
-        )
-
-        // Build map of orgUnits by id for lookup
-        const unitMap: Record<string, Node> = {}
-        clientUnits.forEach((unit) => {
-            unitMap[unit.id] = { id: unit.id, name: unit.name, children: [] }
-        })
-
-        // Connect children to parents
-        const roots: Node[] = []
-        clientUnits.forEach((unit) => {
-            const node = unitMap[unit.id]
-            if (unit.parent_id) {
-                const parent = unitMap[unit.parent_id]
-                if (parent) parent.children?.push(node)
-            } else {
-                roots.push(node)
-            }
-        })
-
-        // Add client node with its org structure
-        tree.push({
-            id: client.id,
-            name: client.name,
-            children: roots,
-        })
-    }
-
-    return tree
-}
-
-/* -------------------------------
-    Checkbox Node Component
--------------------------------- */
 const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     const nodeState = useTreeViewNodeContext()
     return (
@@ -106,46 +54,107 @@ const TreeNodeCheckbox = (props: TreeView.NodeCheckboxProps) => {
     )
 }
 
-/* -------------------------------
-    Main Component
--------------------------------- */
+interface Node {
+    id: string
+    name: string
+    children?: Node[]
+    type: "client" | "orgUnit" | "booth"
+}
+
+// 🧠 Utility: build hierarchy
+function buildTree(clients: any[], orgUnits: any[], booths: any[]): Node {
+    // Map for quick lookup
+    const orgUnitMap = new Map<string, Node>()
+
+    // Step 1. Create orgUnit nodes
+    orgUnits.forEach((ou) => {
+        orgUnitMap.set(ou.id, {
+            id: ou.id,
+            name: ou.name,
+            children: [],
+            type: "orgUnit",
+        })
+    })
+
+    // Step 2. Link orgUnits under their parents
+    orgUnits.forEach((ou) => {
+        const node = orgUnitMap.get(ou.id)!
+        if (ou.parent_id) {
+            const parent = orgUnitMap.get(ou.parent_id)
+            if (parent) parent.children!.push(node)
+        }
+    })
+
+    // Step 3. Create client nodes and attach top-level orgUnits
+    const clientMap = new Map<string, Node>()
+    clients.forEach((client) => {
+        clientMap.set(client.id, {
+            id: client.id,
+            name: client.name,
+            children: [],
+            type: "client",
+        })
+    })
+
+    orgUnits.forEach((ou) => {
+        if (!ou.parent_id) {
+            const clientNode = clientMap.get(ou.client_id)
+            if (clientNode) clientNode.children!.push(orgUnitMap.get(ou.id)!)
+        }
+    })
+
+    // Step 4. Attach booths to their orgUnit parents
+    booths.forEach((booth) => {
+        const parent = orgUnitMap.get(booth.org_unit_id)
+        if (parent) {
+            parent.children!.push({
+                id: booth.id,
+                name: `${booth.name} (${booth.serial_number})`,
+                type: "booth",
+            })
+        }
+    })
+
+    // Step 5. Root node with all clients
+    return {
+        id: "ROOT",
+        name: "",
+        type: "client",
+        children: Array.from(clientMap.values()),
+    }
+}
+
 const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) => {
-    const {
-        data: clients,
-        isLoading: clientsLoading,
-        isError: clientsError,
-    } = useQuery(getClientsQuery())
+    const clientsQuery = useQuery(getClientsQuery())
+    const orgUnitsQuery = useQuery(getOrgUnitsQuery())
+    const boothsQuery = useQuery(getPhoneBoothsQuery())
 
-    const {
-        data: orgUnits,
-        isLoading: orgUnitsLoading,
-        isError: orgUnitsError,
-    } = useQuery(getOrgUnitsQuery())
+    const isLoading = clientsQuery.isLoading || orgUnitsQuery.isLoading || boothsQuery.isLoading
+    const hasError = clientsQuery.isError || orgUnitsQuery.isError || boothsQuery.isError
 
-    if (clientsLoading || orgUnitsLoading) {
+    if (isLoading) {
         return (
-            <Center p={4}>
+            <VStack>
                 <Spinner />
-            </Center>
+                <Text>Loading hierarchy...</Text>
+            </VStack>
         )
     }
 
-    if (clientsError || orgUnitsError) {
-        return <Center color="red.500">Failed to load tree data</Center>
+    if (hasError) {
+        return <Text color="red.500">Failed to load tree data.</Text>
     }
 
-    // Build hierarchical structure
-    const nodes = buildTree(clients || [], orgUnits || [])
+    const clients = clientsQuery.data || []
+    const orgUnits = orgUnitsQuery.data || []
+    const booths = boothsQuery.data || []
 
-    // Create Chakra Tree collection dynamically
+    const rootNode = buildTree(clients, orgUnits, booths)
+
     const collection = createTreeCollection<Node>({
         nodeToValue: (node) => node.id,
         nodeToString: (node) => node.name,
-        rootNode: {
-            id: "ROOT",
-            name: "",
-            children: nodes,
-        },
+        rootNode,
     })
 
     return (
@@ -155,10 +164,10 @@ const PhoneBoothTreeFilter = ({ onCheckedChange }: PhoneBoothTreeFilterProps) =>
             defaultCheckedValue={[]}
             onCheckedChange={(details) => {
                 console.log("Checked in TreeView:", details.checkedValue)
-                onCheckedChange?.(details.checkedValue)
+                onCheckedChange?.(details.checkedValue) // pass selected booth IDs up
             }}
         >
-            <TreeView.Label>Organization Tree</TreeView.Label>
+            <TreeView.Label>Phone Booths</TreeView.Label>
             <TreeView.Tree>
                 <TreeView.Node
                     render={({ node, nodeState }) =>

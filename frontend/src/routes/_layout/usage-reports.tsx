@@ -12,9 +12,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  BarChart,
+  Bar,
 } from 'recharts'
 
-// Fetch all usage sessions
 function getUsageSessionsQuery() {
   return {
     queryKey: ["usageSessions"],
@@ -29,19 +30,16 @@ export const Route = createFileRoute('/_layout/usage-reports')({
 function UsageReportsComponent() {
   const [checkedItems, setCheckedItems] = useState<string[]>([])
 
-  // Fetch all usage sessions
   const { data, isLoading, isError, error } = useQuery(getUsageSessionsQuery())
 
-  // Filter & aggregate
   const dailyUsage = useMemo(() => {
     if (!data || data.length === 0) return []
 
-    // Filter to selected booths (if any)
+    // Filter by checked booths
     const filtered = checkedItems.length
       ? data.filter((s: any) => checkedItems.includes(s.phone_booth_id))
       : data
 
-    // Aggregate by day
     const usageByDay: Record<string, number> = {}
     for (const session of filtered) {
       if (!session.start_time || !session.duration_seconds) continue
@@ -49,7 +47,7 @@ function UsageReportsComponent() {
       usageByDay[day] = (usageByDay[day] || 0) + session.duration_seconds
     }
 
-    // Convert to chart-friendly format (hours/day)
+    // Convert seconds → hours
     return Object.entries(usageByDay)
       .map(([day, totalSeconds]) => ({
         day,
@@ -75,26 +73,46 @@ function UsageReportsComponent() {
       )}
 
       {dailyUsage.length > 0 && (
-        <Box mt={8}>
-          <Heading size="md" mb={3}>
-            Daily Usage (hours)
-          </Heading>
+        <>
+          {/* Daily usage line chart */}
+          <Box mt={8}>
+            <Heading size="md" mb={3}>
+              Daily Usage (Hours)
+            </Heading>
 
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dailyUsage}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="total_hours"
-                stroke="#3182ce"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </Box>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={dailyUsage}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="total_hours"
+                  stroke="#3182ce"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Box>
+
+          {/* Daily busy-hours bar chart */}
+          <Box mt={12}>
+            <Heading size="md" mb={3}>
+              Daily Busy Hours
+            </Heading>
+
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={dailyUsage}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="total_hours" fill="#63b3ed" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+        </>
       )}
     </Container>
   )

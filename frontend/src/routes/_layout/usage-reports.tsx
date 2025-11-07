@@ -4,17 +4,18 @@ import { useState, useMemo } from 'react'
 import { Container, Heading, Spinner, Box, Text } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { UsageSessionsService } from '@/client'
+import { PhoneBoothsService } from '@/client'
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
   BarChart,
   Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
 } from 'recharts'
+
 
 function getUsageSessionsQuery() {
   return {
@@ -23,38 +24,86 @@ function getUsageSessionsQuery() {
   }
 }
 
+function getPhoneBoothsQuery() {
+  return {
+    queryKey: ['phoneBooths'],
+    queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 1000 }),
+  }
+}
+
 export const Route = createFileRoute('/_layout/usage-reports')({
   component: UsageReportsComponent,
 })
 
+// 🎨 simple color palette for booths
+const COLORS = [
+  "#3182ce", // blue
+  "#38a169", // green
+  "#d69e2e", // yellow
+  "#dd6b20", // orange
+  "#805ad5", // purple
+  "#e53e3e", // red
+  "#319795", // teal
+  "#718096", // gray
+]
+
 function UsageReportsComponent() {
   const [checkedItems, setCheckedItems] = useState<string[]>([])
-
   const { data, isLoading, isError, error } = useQuery(getUsageSessionsQuery())
+  const { data: booths } = useQuery(getPhoneBoothsQuery())
 
-  const dailyUsage = useMemo(() => {
+  // ✅ Aggregate data by day + booth
+  const chartData = useMemo(() => {
     if (!data || data.length === 0) return []
 
-    // Filter by checked booths
     const filtered = checkedItems.length
       ? data.filter((s: any) => checkedItems.includes(s.phone_booth_id))
       : data
 
-    const usageByDay: Record<string, number> = {}
+    const usage: Record<string, Record<string, number>> = {}
+
     for (const session of filtered) {
       if (!session.start_time || !session.duration_seconds) continue
       const day = new Date(session.start_time).toISOString().split('T')[0]
-      usageByDay[day] = (usageByDay[day] || 0) + session.duration_seconds
+      const boothId = session.phone_booth_id
+      if (!usage[day]) usage[day] = {}
+      usage[day][boothId] = (usage[day][boothId] || 0) + session.duration_seconds
     }
 
-    // Convert seconds → hours
-    return Object.entries(usageByDay)
-      .map(([day, totalSeconds]) => ({
-        day,
-        total_hours: totalSeconds / 3600,
-      }))
+    // Convert to array with booth hours
+    return Object.entries(usage)
+      .map(([day, booths]) => {
+        const entry: any = { day }
+        for (const [boothId, totalSeconds] of Object.entries(booths)) {
+          entry[boothId] = totalSeconds / 3600 // convert to hours
+        }
+        return entry
+      })
       .sort((a, b) => a.day.localeCompare(b.day))
   }, [data, checkedItems])
+
+  console.log("Chart Data:", chartData)
+
+  // Collect unique booth IDs in dataset (for dynamic <Bar> creation)
+  const boothIds = useMemo(() => {
+    if (!chartData.length) return []
+    const ids = new Set<string>()
+    for (const d of chartData) {
+      Object.keys(d).forEach((k) => {
+        if (k !== 'day') ids.add(k)
+      })
+    }
+    return Array.from(ids)
+  }, [chartData])
+
+  // Create a mapping from boothId → serial number
+  const boothMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    booths?.forEach((b: any) => {
+      map[b.id] = b.serial_number
+    })
+    return map
+  }, [booths])
 
   return (
     <Container maxW="full" pt={12}>
@@ -68,51 +117,35 @@ function UsageReportsComponent() {
 
       {isError && <Text color="red.500">Error: {error?.message}</Text>}
 
-      {!isLoading && dailyUsage.length === 0 && (
+      {!isLoading && chartData.length === 0 && (
         <Text mt={6}>No usage data found for the selected booths.</Text>
       )}
 
-      {dailyUsage.length > 0 && (
-        <>
-          {/* Daily usage line chart */}
-          <Box mt={8}>
-            <Heading size="md" mb={3}>
-              Daily Usage (Hours)
-            </Heading>
+      {chartData.length > 0 && (
+        <Box mt={12}>
+          <Heading size="md" mb={3}>
+            Daily Busy Hours per Booth
+          </Heading>
 
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyUsage}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="total_hours"
-                  stroke="#3182ce"
-                  strokeWidth={2}
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              {boothIds.map((boothId, index) => (
+                <Bar
+                  key={boothId}
+                  dataKey={boothId}
+                  stackId="a"
+                  fill={COLORS[index % COLORS.length]}
+                  name={boothMap[boothId] || `Booth ${boothId.slice(0, 6)}`} // Short label
                 />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
-
-          {/* Daily busy-hours bar chart */}
-          <Box mt={12}>
-            <Heading size="md" mb={3}>
-              Daily Busy Hours
-            </Heading>
-
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={dailyUsage}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="total_hours" fill="#63b3ed" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Box>
-        </>
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </Box>
       )}
     </Container>
   )

@@ -11,6 +11,7 @@ const items = [
   { icon: FiBriefcase, title: "Items", path: "/items" },
   { icon: FiBriefcase, title: "MQTT Items", path: "/mqtt-items" },
   { icon: FiCalendar, title: "Booth Calendar", path: "/booth-calendar" },
+  { icon: FiBriefcase, title: "Usage Reports", path: "/usage-reports" },
   { icon: FiSettings, title: "User Settings", path: "/settings" },
 ]
 

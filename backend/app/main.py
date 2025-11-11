@@ -5,7 +5,13 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.api.main import api_router
 from app.core.config import settings
+from app.core.mqtt import get_mqtt_client
+from contextlib import asynccontextmanager
+import logging
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def custom_generate_unique_id(route: APIRoute) -> str:
     return f"{route.tags[0]}-{route.name}"
@@ -14,7 +20,27 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
     sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)
 
+mqtt_client = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if settings.mqtt_enabled:
+        global mqtt_client
+        mqtt_client = get_mqtt_client()
+        try:
+            mqtt_client.connect(settings.MQTT_BROKER, settings.MQTT_PORT)
+            mqtt_client.loop_start()
+        except Exception as e:
+            logger.error(f"Failed to connect to MQTT broker: {e}")
+    
+    yield
+    # Shutdown
+    if mqtt_client:
+        mqtt_client.loop_stop()
+        mqtt_client.disconnect()
+
 app = FastAPI(
+    lifespan=lifespan,
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,

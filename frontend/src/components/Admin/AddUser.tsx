@@ -1,17 +1,19 @@
 import {
   Button,
+  createListCollection,
   DialogActionTrigger,
   DialogTitle,
   Flex,
   Input,
+  Select,
   Text,
   VStack,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
-import { type UserCreate, UsersService } from "@/client"
+import { ClientsService, type UserCreate, UsersService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
@@ -27,8 +29,41 @@ import {
 } from "../ui/dialog"
 import { Field } from "../ui/field"
 
+function getClientsQuery() {
+    return {
+        queryKey: ["clients"],
+        queryFn: () => ClientsService.readClients(),
+    }
+}
+
 interface UserCreateForm extends UserCreate {
   confirm_password: string
+}
+
+function ClientSelect({ collection }: { collection: any }) {
+  return (
+    <Select.Root collection={collection} size="sm">
+      <Select.HiddenSelect />
+      <Select.Label>Select client</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Select client" />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {collection.items.map((client: any) => (
+            <Select.Item item={client} key={client.value}>
+              {client.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+    </Select.Root>
+  )
 }
 
 const AddUser = () => {
@@ -55,6 +90,17 @@ const AddUser = () => {
     },
   })
 
+  const clientsQuery = useQuery(getClientsQuery())
+  console.log("Clients:", clientsQuery.data)
+  const clientsCollection = createListCollection({
+    items: clientsQuery.data?.map(client => ({
+      label: client.name,
+      value: client.id
+    })) ?? []
+  });
+  console.log("Clients collection:", clientsCollection)
+
+
   const mutation = useMutation({
     mutationFn: (data: UserCreate) =>
       UsersService.createUser({ requestBody: data }),
@@ -71,6 +117,7 @@ const AddUser = () => {
     },
   })
 
+  // TODO Add the client field to user when submitted
   const onSubmit: SubmitHandler<UserCreateForm> = (data) => {
     mutation.mutate(data)
   }
@@ -161,6 +208,9 @@ const AddUser = () => {
                   placeholder="Password"
                   type="password"
                 />
+              </Field>
+              <Field label="Client">
+                <ClientSelect collection={clientsCollection} />
               </Field>
             </VStack>
 

@@ -67,6 +67,7 @@ function UsersTable() {
             <Table.ColumnHeader w="sm">Email</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Role</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Status</Table.ColumnHeader>
+            <Table.ColumnHeader w="sm">Client</Table.ColumnHeader>
             <Table.ColumnHeader w="sm">Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -88,6 +89,7 @@ function UsersTable() {
                 {user.is_superuser ? "Superuser" : "User"}
               </Table.Cell>
               <Table.Cell>{user.is_active ? "Active" : "Inactive"}</Table.Cell>
+              <Table.Cell>{user.client?.name || "N/A"}</Table.Cell>
               <Table.Cell>
                 <UserActionsMenu
                   user={user}

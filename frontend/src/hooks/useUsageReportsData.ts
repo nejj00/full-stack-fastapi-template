@@ -66,19 +66,19 @@ function prepareUsageChartData(data: any[], checkedItems: string[]) {
 export function useUsageReportsData(checkedItems: string[]) {
   const { data: sessions, isLoading, isError, error } = useQuery({
     queryKey: ["usageSessions"],
-    queryFn: () => UsageSessionsService.readUsageSessions({ skip: 0, limit: 1000 }),
+    queryFn: () => UsageSessionsService.readUsageSessions({ skip: 0, limit: 2000 }),
   })
 
   const { data: booths } = useQuery({
     queryKey: ["phoneBooths"],
-    queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 1000 }),
+    queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 2000 }),
   })
 
   // Map booth IDs → serial numbers
   const boothMap = useMemo(() => {
     const map: Record<string, string> = {}
     booths?.forEach((b: any) => {
-      map[b.id] = b.serial_number
+      map[b.id] = `${b.name} (${b.serial_number})`
     })
     return map
   }, [booths])

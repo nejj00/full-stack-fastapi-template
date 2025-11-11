@@ -109,6 +109,33 @@ export const BoothStateReadSchema = {
     title: 'BoothStateRead'
 } as const;
 
+export const ClientSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'Client'
+} as const;
+
 export const ClientCreateSchema = {
     properties: {
         name: {
@@ -1112,6 +1139,18 @@ export const UserCreateSchema = {
             ],
             title: 'Full Name'
         },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
         password: {
             type: 'string',
             maxLength: 40,
@@ -1154,10 +1193,32 @@ export const UserPublicSchema = {
             ],
             title: 'Full Name'
         },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
         id: {
             type: 'string',
             format: 'uuid',
             title: 'Id'
+        },
+        client: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Client'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
@@ -1233,6 +1294,18 @@ export const UserUpdateSchema = {
                 }
             ],
             title: 'Full Name'
+        },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
         },
         password: {
             anyOf: [

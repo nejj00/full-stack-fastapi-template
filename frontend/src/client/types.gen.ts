@@ -21,6 +21,13 @@ export type BoothStateRead = {
     id: number;
 };
 
+export type Client = {
+    name: string;
+    id?: string;
+    created_at?: string;
+    updated_at?: string;
+};
+
 export type ClientCreate = {
     name: string;
 };
@@ -220,6 +227,7 @@ export type UserCreate = {
     is_active?: boolean;
     is_superuser?: boolean;
     full_name?: (string | null);
+    client_id?: (string | null);
     password: string;
 };
 
@@ -228,7 +236,9 @@ export type UserPublic = {
     is_active?: boolean;
     is_superuser?: boolean;
     full_name?: (string | null);
+    client_id?: (string | null);
     id: string;
+    client?: (Client | null);
 };
 
 export type UserRegister = {
@@ -247,6 +257,7 @@ export type UserUpdate = {
     is_active?: boolean;
     is_superuser?: boolean;
     full_name?: (string | null);
+    client_id?: (string | null);
     password?: (string | null);
 };
 

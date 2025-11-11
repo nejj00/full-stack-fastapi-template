@@ -1,5 +1,6 @@
 import uuid
 
+from app.models.clients import Client
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 from typing import TYPE_CHECKING, Optional
@@ -15,6 +16,7 @@ class UserBase(SQLModel):
     is_active: bool = True
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
+    client_id: Optional[uuid.UUID] = None
 
 
 # Properties to receive via API on creation
@@ -49,11 +51,16 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    client_id: Optional[uuid.UUID] = Field(default=None, foreign_key="clients.id")
+    client: Optional["Client"] = Relationship()
+    org_unit_id: Optional[uuid.UUID] = Field(default=None, foreign_key="org_units.id")
+    role_id: Optional[uuid.UUID] = Field(default=None, foreign_key="roles.id")
 
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
     id: uuid.UUID
+    client: Optional["Client"] = None
 
 
 class UsersPublic(SQLModel):

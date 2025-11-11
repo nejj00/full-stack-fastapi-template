@@ -63,7 +63,10 @@ function prepareUsageChartData(data: any[], checkedItems: string[]) {
 }
 
 // --- React Hook: unified data source for usage reports ---
-export function useUsageReportsData(checkedItems: string[]) {
+export function useUsageReportsData(
+  checkedItems: string[],
+  dateRange?: [Date, Date]
+) {
   const { data: sessions, isLoading, isError, error } = useQuery({
     queryKey: ["usageSessions"],
     queryFn: () => UsageSessionsService.readUsageSessions({ skip: 0, limit: 2000 }),
@@ -74,7 +77,7 @@ export function useUsageReportsData(checkedItems: string[]) {
     queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 2000 }),
   })
 
-  // Map booth IDs → serial numbers
+  // 🧭 Map booth IDs → serial numbers
   const boothMap = useMemo(() => {
     const map: Record<string, string> = {}
     booths?.forEach((b: any) => {
@@ -83,17 +86,28 @@ export function useUsageReportsData(checkedItems: string[]) {
     return map
   }, [booths])
 
-  // ✅ Clean replacement for the old aggregation logic
+  // 🧮 Prepare usage data
   const chartData = useMemo(() => {
-    return prepareUsageChartData(sessions || [], checkedItems)
-  }, [sessions, checkedItems])
+    let prepared = prepareUsageChartData(sessions || [], checkedItems)
 
-  // Extract booth IDs dynamically
+    // 🕒 Apply date filter if provided
+    if (dateRange && dateRange[0] && dateRange[1]) {
+      const [start, end] = dateRange
+      const startISO = start.toISOString().split("T")[0]
+      const endISO = end.toISOString().split("T")[0]
+      console.log("Filtering data from", startISO, "to", endISO);
+      prepared = prepared.filter(d => d.day >= startISO && d.day <= endISO)
+    }
+
+    return prepared
+  }, [sessions, checkedItems, dateRange])
+
+  // 🪪 Extract booth IDs dynamically
   const boothIds = useMemo(() => {
     if (!chartData.length) return []
     const ids = new Set<string>()
-    chartData.forEach((entry) => {
-      Object.keys(entry).forEach((key) => {
+    chartData.forEach(entry => {
+      Object.keys(entry).forEach(key => {
         if (key !== "day" && key !== "totalHours") ids.add(key)
       })
     })

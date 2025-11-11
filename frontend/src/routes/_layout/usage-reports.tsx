@@ -5,6 +5,9 @@ import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 import { useUsageReportsData } from "@/hooks/useUsageReportsData"
 import { UsageLineChart } from "@/components/UsageReports/UsageLineChart"
 import { UsageBarChart } from "@/components/UsageReports/UsageBarChart"
+import { RangeDatepicker } from "chakra-dayzed-datepicker";
+import { Label } from "recharts"
+
 
 export const Route = createFileRoute("/_layout/usage-reports")({
   component: UsageReportsPage,
@@ -12,8 +15,18 @@ export const Route = createFileRoute("/_layout/usage-reports")({
 
 function UsageReportsPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([])
+  
+  
+  const today = new Date()
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(today.getDate() - 6)
+  const [selectedDates, setSelectedDates] = useState<Date[]>([sevenDaysAgo, today])
+  console.log("Selected Dates:", selectedDates);
+
   const { chartData, boothIds, boothMap, isLoading, isError, error, COLORS } =
-    useUsageReportsData(checkedItems)
+    useUsageReportsData(checkedItems, selectedDates.length === 2 ? [selectedDates[0], selectedDates[1]] : undefined)
+  
+  console.log("UsageReportsPage render:", { checkedItems, chartData })
 
   return (
     <Container maxW="full" pt={12}>
@@ -22,6 +35,12 @@ function UsageReportsPage() {
       </Heading>
 
       <PhoneBoothTreeFilter onCheckedChange={setCheckedItems} />
+
+      <Label>Date Range</Label>
+      <RangeDatepicker
+        selectedDates={selectedDates}
+        onDateChange={setSelectedDates}
+      />
 
       {isLoading && <Spinner mt={6} />}
       {isError && <Text color="red.500">Error: {error?.message}</Text>}

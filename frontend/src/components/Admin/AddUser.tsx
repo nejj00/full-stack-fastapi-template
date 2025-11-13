@@ -40,9 +40,22 @@ interface UserCreateForm extends UserCreate {
   confirm_password: string
 }
 
-function ClientSelect({ collection }: { collection: any }) {
+function ClientSelect({ 
+  collection, 
+  value, 
+  onChange 
+}: { 
+  collection: any
+  value?: string[]
+  onChange?: (value: string[]) => void
+}) {
   return (
-    <Select.Root collection={collection} size="sm">
+    <Select.Root 
+      collection={collection} 
+      size="sm"
+      value={value}
+      onValueChange={(details) => onChange?.(details.value)}
+    >
       <Select.HiddenSelect />
       <Select.Label>Select client</Select.Label>
       <Select.Control>
@@ -210,8 +223,18 @@ const AddUser = () => {
                 />
               </Field>
               <Field label="Client">
-                <ClientSelect collection={clientsCollection} />
-              </Field>
+              <Controller
+                control={control}
+                name="client_id"
+                render={({ field }) => (
+                  <ClientSelect 
+                    collection={clientsCollection}
+                    value={field.value ? [field.value] : []}
+                    onChange={(values) => field.onChange(values[0] || null)}
+                  />
+                )}
+              />
+            </Field>
             </VStack>
 
             <Flex mt={4} direction="column" gap={4}>

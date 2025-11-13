@@ -13,7 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
-import { ClientsService, type UserCreate, UsersService } from "@/client"
+import { ClientsService, RolesService, type UserCreate, UsersService } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
@@ -33,6 +33,13 @@ function getClientsQuery() {
     return {
         queryKey: ["clients"],
         queryFn: () => ClientsService.readClients(),
+    }
+}
+
+function getRolesQuery() {
+    return {
+        queryKey: ["roles"],
+        queryFn: () => RolesService.readRoles(),
     }
 }
 
@@ -79,6 +86,46 @@ function ClientSelect({
   )
 }
 
+function RoleSelect({ 
+  collection, 
+  value, 
+  onChange 
+}: { 
+  collection: any
+  value?: string[]
+  onChange?: (value: string[]) => void
+}) {
+  return (
+    <Select.Root 
+      collection={collection} 
+      size="sm"
+      value={value}
+      onValueChange={(details) => onChange?.(details.value)}
+      multiple
+    >
+      <Select.HiddenSelect />
+      <Select.Label>Select roles</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Select roles" />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {collection.items.map((role: any) => (
+            <Select.Item item={role} key={role.value}>
+              {role.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+    </Select.Root>
+  )
+}
+
 const AddUser = () => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
@@ -100,19 +147,26 @@ const AddUser = () => {
       confirm_password: "",
       is_superuser: false,
       is_active: false,
+      client_id: null,
+      role_id: null,
     },
   })
 
   const clientsQuery = useQuery(getClientsQuery())
-  console.log("Clients:", clientsQuery.data)
   const clientsCollection = createListCollection({
     items: clientsQuery.data?.map(client => ({
       label: client.name,
       value: client.id
     })) ?? []
-  });
-  console.log("Clients collection:", clientsCollection)
+  })
 
+  const rolesQuery = useQuery(getRolesQuery())
+  const rolesCollection = createListCollection({
+    items: rolesQuery.data?.map(role => ({
+      label: role.name,
+      value: role.id
+    })) ?? []
+  })
 
   const mutation = useMutation({
     mutationFn: (data: UserCreate) =>
@@ -130,9 +184,9 @@ const AddUser = () => {
     },
   })
 
-  // TODO Add the client field to user when submitted
   const onSubmit: SubmitHandler<UserCreateForm> = (data) => {
-    mutation.mutate(data)
+    const { confirm_password, ...userData } = data
+    mutation.mutate(userData as UserCreate)
   }
 
   return (
@@ -222,19 +276,34 @@ const AddUser = () => {
                   type="password"
                 />
               </Field>
+
               <Field label="Client">
-              <Controller
-                control={control}
-                name="client_id"
-                render={({ field }) => (
-                  <ClientSelect 
-                    collection={clientsCollection}
-                    value={field.value ? [field.value] : []}
-                    onChange={(values) => field.onChange(values[0] || null)}
-                  />
-                )}
-              />
-            </Field>
+                <Controller
+                  control={control}
+                  name="client_id"
+                  render={({ field }) => (
+                    <ClientSelect 
+                      collection={clientsCollection}
+                      value={field.value ? [field.value] : []}
+                      onChange={(values) => field.onChange(values[0] || null)}
+                    />
+                  )}
+                />
+              </Field>
+
+              <Field label="Organization Roles">
+                <Controller
+                  control={control}
+                  name="role_id"
+                  render={({ field }) => (
+                    <RoleSelect 
+                      collection={rolesCollection}
+                      value={field.value ? [field.value] : []}
+                      onChange={(values) => field.onChange(values[0] || null)}
+                    />
+                  )}
+                />
+              </Field>
             </VStack>
 
             <Flex mt={4} direction="column" gap={4}>

@@ -135,6 +135,13 @@ export type PrivateUserCreate = {
     is_verified?: boolean;
 };
 
+export type Role = {
+    name: string;
+    description?: (string | null);
+    id?: string;
+    created_at?: string;
+};
+
 export type RoleCreate = {
     name: string;
     description?: (string | null);
@@ -228,6 +235,7 @@ export type UserCreate = {
     is_superuser?: boolean;
     full_name?: (string | null);
     client_id?: (string | null);
+    role_id?: (string | null);
     password: string;
 };
 
@@ -237,8 +245,10 @@ export type UserPublic = {
     is_superuser?: boolean;
     full_name?: (string | null);
     client_id?: (string | null);
+    role_id?: (string | null);
     id: string;
     client?: (Client | null);
+    role?: (Role | null);
 };
 
 export type UserRegister = {
@@ -258,6 +268,7 @@ export type UserUpdate = {
     is_superuser?: boolean;
     full_name?: (string | null);
     client_id?: (string | null);
+    role_id?: (string | null);
     password?: (string | null);
 };
 

@@ -7,6 +7,11 @@ from sqlmodel import select
 from app.api.deps import CurrentUser, SessionDep
 from app.models.phone_booths import PhoneBooth, PhoneBoothCreate, PhoneBoothRead
 from app.models.general_models import Message
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/phone-booths", tags=["phone_booths"])
 
@@ -20,6 +25,7 @@ def read_phone_booths(
     limit: int = 100,
 ) -> Any:
     """List phone booths. Superusers see all; others limited to their client."""
+    logger.info(f"User {current_user} is requesting phone booths list")
     if current_user.is_superuser:
         statement = select(PhoneBooth)
         if client_id:

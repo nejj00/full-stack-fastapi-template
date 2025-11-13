@@ -693,6 +693,39 @@ export const PrivateUserCreateSchema = {
     title: 'PrivateUserCreate'
 } as const;
 
+export const RoleSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'Role'
+} as const;
+
 export const RoleCreateSchema = {
     properties: {
         name: {
@@ -1151,6 +1184,18 @@ export const UserCreateSchema = {
             ],
             title: 'Client Id'
         },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
+        },
         password: {
             type: 'string',
             maxLength: 40,
@@ -1205,6 +1250,18 @@ export const UserPublicSchema = {
             ],
             title: 'Client Id'
         },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -1214,6 +1271,16 @@ export const UserPublicSchema = {
             anyOf: [
                 {
                     '$ref': '#/components/schemas/Client'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        role: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Role'
                 },
                 {
                     type: 'null'
@@ -1306,6 +1373,18 @@ export const UserUpdateSchema = {
                 }
             ],
             title: 'Client Id'
+        },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
         },
         password: {
             anyOf: [

@@ -10,14 +10,17 @@ import {
 } from "recharts"
 import { Box, Heading } from "@chakra-ui/react"
 
+const COLORS = [
+  "#3182ce", "#38a169", "#d69e2e", "#dd6b20",
+  "#805ad5", "#e53e3e", "#319795", "#718096",
+]
 interface Props {
   data: any[]
   boothIds: string[]
   boothMap: Record<string, string>
-  colors: string[]
 }
 
-export function UsageBarChart({ data, boothIds, boothMap, colors }: Props) {
+export function UsageBarChart({ data, boothIds, boothMap }: Props) {
   // 🗓️ Helper for day of week label
   const formatDayOfWeek = (isoDate: string) => {
     const date = new Date(isoDate)
@@ -54,7 +57,7 @@ export function UsageBarChart({ data, boothIds, boothMap, colors }: Props) {
               key={boothId}
               dataKey={boothId}
               stackId="a"
-              fill={colors[index % colors.length]}
+              fill={COLORS[index % COLORS.length]}
               name={boothMap[boothId] || `Booth ${boothId.slice(0, 6)}`}
             />
           ))}

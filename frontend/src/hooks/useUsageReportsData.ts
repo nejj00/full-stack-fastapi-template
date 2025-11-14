@@ -3,11 +3,6 @@ import { useMemo } from "react"
 import { UsageSessionsService, PhoneBoothsService } from "@/client"
 
 
-const COLORS = [
-  "#3182ce", "#38a169", "#d69e2e", "#dd6b20",
-  "#805ad5", "#e53e3e", "#319795", "#718096",
-]
-
 // src/utils/dateUtils.ts
 export function getDateRange(start: Date, end: Date): string[] {
   const dates: string[] = []
@@ -77,6 +72,13 @@ export function useUsageReportsData(
     queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 2000 }),
   })
 
+  // const { data: clients } = useQuery({
+  //   queryKey: ["clients"],
+  //   queryFn: () => ClientsService.readClients(),
+  // })
+
+  console.log("Phone booths fetched:", booths);
+
   // 🧭 Map booth IDs → serial numbers
   const boothMap = useMemo(() => {
     const map: Record<string, string> = {}
@@ -121,6 +123,5 @@ export function useUsageReportsData(
     isLoading,
     isError,
     error,
-    COLORS,
   }
 }

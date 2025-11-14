@@ -13,6 +13,7 @@ class PhoneBoothBase(SQLModel):
     timezone: Optional[str] = None
     last_seen: Optional[datetime] = None
     state_id: Optional[int] = 0
+    working_hours: int
 
 
 class PhoneBooth(PhoneBoothBase, table=True):
@@ -28,6 +29,7 @@ class PhoneBooth(PhoneBoothBase, table=True):
     timezone: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    working_hours: int = Field(default=8)
 
 
 class PhoneBoothCreate(PhoneBoothBase):

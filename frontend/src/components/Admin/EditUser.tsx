@@ -1,19 +1,21 @@
 import {
   Button,
+  createListCollection,
   DialogActionTrigger,
   DialogRoot,
   DialogTrigger,
   Flex,
   Input,
+  Select,
   Text,
   VStack,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { Controller, type SubmitHandler, useForm } from "react-hook-form"
 import { FaExchangeAlt } from "react-icons/fa"
 
-import { type UserPublic, UsersService, type UserUpdate } from "@/client"
+import { ClientsService, RolesService, type UserPublic, UsersService, type UserUpdate } from "@/client"
 import type { ApiError } from "@/client/core/ApiError"
 import useCustomToast from "@/hooks/useCustomToast"
 import { emailPattern, handleError } from "@/utils"
@@ -27,6 +29,98 @@ import {
   DialogTitle,
 } from "../ui/dialog"
 import { Field } from "../ui/field"
+
+function getClientsQuery() {
+  return {
+    queryKey: ["clients"],
+    queryFn: () => ClientsService.readClients(),
+  }
+}
+
+function getRolesQuery() {
+  return {
+    queryKey: ["roles"],
+    queryFn: () => RolesService.readRoles(),
+  }
+}
+
+function ClientSelect({ 
+  collection, 
+  value, 
+  onChange 
+}: { 
+  collection: any
+  value?: string[]
+  onChange?: (value: string[]) => void
+}) {
+  return (
+    <Select.Root 
+      collection={collection} 
+      size="sm"
+      value={value}
+      onValueChange={(details) => onChange?.(details.value)}
+    >
+      <Select.HiddenSelect />
+      <Select.Label>Select client</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Select client" />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {collection.items.map((client: any) => (
+            <Select.Item item={client} key={client.value}>
+              {client.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+    </Select.Root>
+  )
+}
+
+function RoleSelect({ 
+  collection, 
+  value, 
+  onChange 
+}: { 
+  collection: any
+  value?: string[]
+  onChange?: (value: string[]) => void
+}) {
+  return (
+    <Select.Root 
+      collection={collection} 
+      size="sm"
+      value={value}
+      onValueChange={(details) => onChange?.(details.value)}
+    >
+      <Select.HiddenSelect />
+      <Select.Label>Select role</Select.Label>
+      <Select.Control>
+        <Select.Trigger>
+          <Select.ValueText placeholder="Select role" />
+        </Select.Trigger>
+        <Select.IndicatorGroup>
+          <Select.Indicator />
+        </Select.IndicatorGroup>
+      </Select.Control>
+      <Select.Positioner>
+        <Select.Content>
+          {collection.items.map((role: any) => (
+            <Select.Item item={role} key={role.value}>
+              {role.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Positioner>
+    </Select.Root>
+  )
+}
 
 interface EditUserProps {
   user: UserPublic
@@ -53,6 +147,22 @@ const EditUser = ({ user }: EditUserProps) => {
     defaultValues: user,
   })
 
+  const clientsQuery = useQuery(getClientsQuery())
+  const clientsCollection = createListCollection({
+    items: clientsQuery.data?.map(client => ({
+      label: client.name,
+      value: client.id
+    })) ?? []
+  })
+
+  const rolesQuery = useQuery(getRolesQuery())
+  const rolesCollection = createListCollection({
+    items: rolesQuery.data?.map(role => ({
+      label: role.name,
+      value: role.id
+    })) ?? []
+  })
+
   const mutation = useMutation({
     mutationFn: (data: UserUpdateForm) =>
       UsersService.updateUser({ userId: user.id, requestBody: data }),
@@ -73,7 +183,8 @@ const EditUser = ({ user }: EditUserProps) => {
     if (data.password === "") {
       data.password = undefined
     }
-    mutation.mutate(data)
+    const { confirm_password, ...userData } = data
+    mutation.mutate(userData)
   }
 
   return (
@@ -155,6 +266,34 @@ const EditUser = ({ user }: EditUserProps) => {
                   })}
                   placeholder="Password"
                   type="password"
+                />
+              </Field>
+
+              <Field label="Client">
+                <Controller
+                  control={control}
+                  name="client_id"
+                  render={({ field }) => (
+                    <ClientSelect 
+                      collection={clientsCollection}
+                      value={field.value ? [field.value] : []}
+                      onChange={(values) => field.onChange(values[0] || null)}
+                    />
+                  )}
+                />
+              </Field>
+
+              <Field label="Organization Role">
+                <Controller
+                  control={control}
+                  name="role_id"
+                  render={({ field }) => (
+                    <RoleSelect 
+                      collection={rolesCollection}
+                      value={field.value ? [field.value] : []}
+                      onChange={(values) => field.onChange(values[0] || null)}
+                    />
+                  )}
                 />
               </Field>
             </VStack>

@@ -10,8 +10,30 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 
 const EVENT_COLORS = [
-  "#3182ce", "#38a169", "#d69e2e", "#dd6b20",
-  "#805ad5", "#e53e3e", "#319795", "#718096",
+  "#3182ce", // Blue
+  "#38a169", // Green
+  "#d69e2e", // Yellow
+  "#dd6b20", // Orange
+  "#805ad5", // Purple
+  "#e53e3e", // Red
+  "#319795", // Teal
+  "#718096", // Gray
+  "#2c7a7b", // Dark Teal
+  "#2d3748", // Dark Gray
+  "#c53030", // Dark Red
+  "#9f7aea", // Light Purple
+  "#ed8936", // Light Orange
+  "#48bb78", // Light Green
+  "#4299e1", // Light Blue
+  "#ed64a6", // Pink
+  "#667eea", // Indigo
+  "#f687b3", // Light Pink
+  "#fc8181", // Light Red
+  "#68d391", // Mint Green
+  "#4fd1c5", // Cyan
+  "#63b3ed", // Sky Blue
+  "#f6ad55", // Peach
+  "#d6bcfa", // Lavender
 ]
 
 function getBusyPhoneBoothsQuery() {
@@ -31,12 +53,26 @@ export const Route = createFileRoute("/_layout/booth-calendar")({
 function CalendarView({ booths }: { booths: any[] }) {
   const now = new Date().toISOString()
 
+  // Color mapping based on booth ID hash
+  // const getColorForBooth = (boothId: string) => {
+  //   let hash = 0
+  //   for (let i = 0; i < boothId.length; i++) {
+  //     hash = boothId.charCodeAt(i) + ((hash << 5) - hash)
+  //   }
+  //   return EVENT_COLORS[Math.abs(hash) % EVENT_COLORS.length]
+  // }
+
+  // Create a stable color mapping based on booth order
+  const boothColorMap = useMemo(() => {
+    const map = new Map<string, string>()
+    booths.forEach((booth, index) => {
+      map.set(booth.id, EVENT_COLORS[index % EVENT_COLORS.length])
+    })
+    return map
+  }, [booths])
+
   const getColorForBooth = (boothId: string) => {
-    let hash = 0
-    for (let i = 0; i < boothId.length; i++) {
-      hash = boothId.charCodeAt(i) + ((hash << 5) - hash)
-    }
-    return EVENT_COLORS[Math.abs(hash) % EVENT_COLORS.length]
+    return boothColorMap.get(boothId) || EVENT_COLORS[0]
   }
 
   const events = booths.map((booth: any) => ({

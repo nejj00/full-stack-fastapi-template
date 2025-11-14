@@ -109,6 +109,33 @@ export const BoothStateReadSchema = {
     title: 'BoothStateRead'
 } as const;
 
+export const ClientSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        updated_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Updated At'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'Client'
+} as const;
+
 export const ClientCreateSchema = {
     properties: {
         name: {
@@ -521,6 +548,10 @@ export const PhoneBoothCreateSchema = {
             title: 'State Id',
             default: 0
         },
+        working_hours: {
+            type: 'integer',
+            title: 'Working Hours'
+        },
         client_id: {
             anyOf: [
                 {
@@ -547,7 +578,7 @@ export const PhoneBoothCreateSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'serial_number'],
+    required: ['name', 'serial_number', 'working_hours'],
     title: 'PhoneBoothCreate'
 } as const;
 
@@ -596,6 +627,10 @@ export const PhoneBoothReadSchema = {
             title: 'State Id',
             default: 0
         },
+        working_hours: {
+            type: 'integer',
+            title: 'Working Hours'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -637,7 +672,7 @@ export const PhoneBoothReadSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'serial_number', 'id', 'client_id', 'org_unit_id', 'created_at', 'updated_at'],
+    required: ['name', 'serial_number', 'working_hours', 'id', 'client_id', 'org_unit_id', 'created_at', 'updated_at'],
     title: 'PhoneBoothRead'
 } as const;
 
@@ -664,6 +699,39 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const RoleSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'Role'
 } as const;
 
 export const RoleCreateSchema = {
@@ -1112,6 +1180,30 @@ export const UserCreateSchema = {
             ],
             title: 'Full Name'
         },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
+        },
         password: {
             type: 'string',
             maxLength: 40,
@@ -1154,10 +1246,54 @@ export const UserPublicSchema = {
             ],
             title: 'Full Name'
         },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
+        },
         id: {
             type: 'string',
             format: 'uuid',
             title: 'Id'
+        },
+        client: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Client'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        role: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/Role'
+                },
+                {
+                    type: 'null'
+                }
+            ]
         }
     },
     type: 'object',
@@ -1233,6 +1369,30 @@ export const UserUpdateSchema = {
                 }
             ],
             title: 'Full Name'
+        },
+        client_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Client Id'
+        },
+        role_id: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Role Id'
         },
         password: {
             anyOf: [

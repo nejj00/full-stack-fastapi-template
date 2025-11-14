@@ -15,12 +15,13 @@ import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as LayoutUsageReportsRouteImport } from './routes/_layout/usage-reports'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutMqttItemsRouteImport } from './routes/_layout/mqtt-items'
 import { Route as LayoutItemsRouteImport } from './routes/_layout/items'
 import { Route as LayoutBoothCalendarRouteImport } from './routes/_layout/booth-calendar'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutUsageReportsTableRouteImport } from './routes/_layout/usage-reports/table'
+import { Route as LayoutUsageReportsChartsRouteImport } from './routes/_layout/usage-reports/charts'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -51,11 +52,6 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutUsageReportsRoute = LayoutUsageReportsRouteImport.update({
-  id: '/usage-reports',
-  path: '/usage-reports',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -81,6 +77,17 @@ const LayoutAdminRoute = LayoutAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutUsageReportsTableRoute = LayoutUsageReportsTableRouteImport.update({
+  id: '/usage-reports/table',
+  path: '/usage-reports/table',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutUsageReportsChartsRoute =
+  LayoutUsageReportsChartsRouteImport.update({
+    id: '/usage-reports/charts',
+    path: '/usage-reports/charts',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
@@ -92,8 +99,9 @@ export interface FileRoutesByFullPath {
   '/items': typeof LayoutItemsRoute
   '/mqtt-items': typeof LayoutMqttItemsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/usage-reports': typeof LayoutUsageReportsRoute
   '/': typeof LayoutIndexRoute
+  '/usage-reports/charts': typeof LayoutUsageReportsChartsRoute
+  '/usage-reports/table': typeof LayoutUsageReportsTableRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -105,8 +113,9 @@ export interface FileRoutesByTo {
   '/items': typeof LayoutItemsRoute
   '/mqtt-items': typeof LayoutMqttItemsRoute
   '/settings': typeof LayoutSettingsRoute
-  '/usage-reports': typeof LayoutUsageReportsRoute
   '/': typeof LayoutIndexRoute
+  '/usage-reports/charts': typeof LayoutUsageReportsChartsRoute
+  '/usage-reports/table': typeof LayoutUsageReportsTableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,8 +129,9 @@ export interface FileRoutesById {
   '/_layout/items': typeof LayoutItemsRoute
   '/_layout/mqtt-items': typeof LayoutMqttItemsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/usage-reports': typeof LayoutUsageReportsRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/usage-reports/charts': typeof LayoutUsageReportsChartsRoute
+  '/_layout/usage-reports/table': typeof LayoutUsageReportsTableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -135,8 +145,9 @@ export interface FileRouteTypes {
     | '/items'
     | '/mqtt-items'
     | '/settings'
-    | '/usage-reports'
     | '/'
+    | '/usage-reports/charts'
+    | '/usage-reports/table'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -148,8 +159,9 @@ export interface FileRouteTypes {
     | '/items'
     | '/mqtt-items'
     | '/settings'
-    | '/usage-reports'
     | '/'
+    | '/usage-reports/charts'
+    | '/usage-reports/table'
   id:
     | '__root__'
     | '/_layout'
@@ -162,8 +174,9 @@ export interface FileRouteTypes {
     | '/_layout/items'
     | '/_layout/mqtt-items'
     | '/_layout/settings'
-    | '/_layout/usage-reports'
     | '/_layout/'
+    | '/_layout/usage-reports/charts'
+    | '/_layout/usage-reports/table'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -218,13 +231,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/usage-reports': {
-      id: '/_layout/usage-reports'
-      path: '/usage-reports'
-      fullPath: '/usage-reports'
-      preLoaderRoute: typeof LayoutUsageReportsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/settings': {
       id: '/_layout/settings'
       path: '/settings'
@@ -260,6 +266,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/usage-reports/table': {
+      id: '/_layout/usage-reports/table'
+      path: '/usage-reports/table'
+      fullPath: '/usage-reports/table'
+      preLoaderRoute: typeof LayoutUsageReportsTableRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/usage-reports/charts': {
+      id: '/_layout/usage-reports/charts'
+      path: '/usage-reports/charts'
+      fullPath: '/usage-reports/charts'
+      preLoaderRoute: typeof LayoutUsageReportsChartsRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
@@ -269,8 +289,9 @@ interface LayoutRouteChildren {
   LayoutItemsRoute: typeof LayoutItemsRoute
   LayoutMqttItemsRoute: typeof LayoutMqttItemsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutUsageReportsRoute: typeof LayoutUsageReportsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutUsageReportsChartsRoute: typeof LayoutUsageReportsChartsRoute
+  LayoutUsageReportsTableRoute: typeof LayoutUsageReportsTableRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -279,8 +300,9 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutItemsRoute: LayoutItemsRoute,
   LayoutMqttItemsRoute: LayoutMqttItemsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutUsageReportsRoute: LayoutUsageReportsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutUsageReportsChartsRoute: LayoutUsageReportsChartsRoute,
+  LayoutUsageReportsTableRoute: LayoutUsageReportsTableRoute,
 }
 
 const LayoutRouteWithChildren =

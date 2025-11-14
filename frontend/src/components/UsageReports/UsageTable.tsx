@@ -1,10 +1,15 @@
 import { useMemo } from "react"
 import { Box, Heading, Table } from "@chakra-ui/react"
 
+interface BoothInfo {
+  name: string
+  workingHours: number
+}
+
 interface Props {
   data: any[]
   boothIds: string[]
-  boothMap: Record<string, string>
+  boothMap: Record<string, BoothInfo>
   selectedDates: Date[]
 }
 
@@ -21,18 +26,21 @@ export function UsageTable({ data, boothIds, boothMap, selectedDates }: Props) {
           ) + 1
         : 1
 
-    const totalAvailableHours = totalDays * 8 // 8 hours per day
-
     return boothIds.map((boothId) => {
+      const boothInfo = boothMap[boothId]
+      const workingHours = boothInfo?.workingHours || 8
+      const totalAvailableHours = totalDays * workingHours
+      
       const totalUsage = data.reduce((sum, day) => sum + (day[boothId] || 0), 0)
       const percentage = (totalUsage / totalAvailableHours) * 100
 
       return {
         id: boothId,
-        booth: boothMap[boothId] || boothId,
+        booth: boothInfo?.name || boothId,
         totalUsage,
         totalAvailableHours,
         percentage,
+        workingHours,
       }
     })
   }, [data, boothIds, boothMap, selectedDates])
@@ -46,6 +54,7 @@ export function UsageTable({ data, boothIds, boothMap, selectedDates }: Props) {
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader>Client / Booth</Table.ColumnHeader>
+            <Table.ColumnHeader>Working Hours/Day</Table.ColumnHeader>
             <Table.ColumnHeader>Usage (hrs)</Table.ColumnHeader>
             <Table.ColumnHeader textAlign="end">Usage %</Table.ColumnHeader>
           </Table.Row>
@@ -54,6 +63,7 @@ export function UsageTable({ data, boothIds, boothMap, selectedDates }: Props) {
           {summaryData.map((item) => (
             <Table.Row key={item.id}>
               <Table.Cell>{item.booth}</Table.Cell>
+              <Table.Cell>{item.workingHours}</Table.Cell>
               <Table.Cell>
                 {item.totalUsage.toFixed(2)}/{item.totalAvailableHours}
               </Table.Cell>

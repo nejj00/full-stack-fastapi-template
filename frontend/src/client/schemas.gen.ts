@@ -548,6 +548,10 @@ export const PhoneBoothCreateSchema = {
             title: 'State Id',
             default: 0
         },
+        working_hours: {
+            type: 'integer',
+            title: 'Working Hours'
+        },
         client_id: {
             anyOf: [
                 {
@@ -574,7 +578,7 @@ export const PhoneBoothCreateSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'serial_number'],
+    required: ['name', 'serial_number', 'working_hours'],
     title: 'PhoneBoothCreate'
 } as const;
 
@@ -623,6 +627,10 @@ export const PhoneBoothReadSchema = {
             title: 'State Id',
             default: 0
         },
+        working_hours: {
+            type: 'integer',
+            title: 'Working Hours'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -664,7 +672,7 @@ export const PhoneBoothReadSchema = {
         }
     },
     type: 'object',
-    required: ['name', 'serial_number', 'id', 'client_id', 'org_unit_id', 'created_at', 'updated_at'],
+    required: ['name', 'serial_number', 'working_hours', 'id', 'client_id', 'org_unit_id', 'created_at', 'updated_at'],
     title: 'PhoneBoothRead'
 } as const;
 

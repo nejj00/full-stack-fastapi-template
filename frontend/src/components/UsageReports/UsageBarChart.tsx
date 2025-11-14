@@ -14,10 +14,16 @@ const COLORS = [
   "#3182ce", "#38a169", "#d69e2e", "#dd6b20",
   "#805ad5", "#e53e3e", "#319795", "#718096",
 ]
+
+interface BoothInfo {
+  name: string
+  workingHours: number
+}
+
 interface Props {
   data: any[]
   boothIds: string[]
-  boothMap: Record<string, string>
+  boothMap: Record<string, BoothInfo>
 }
 
 export function UsageBarChart({ data, boothIds, boothMap }: Props) {
@@ -32,33 +38,29 @@ export function UsageBarChart({ data, boothIds, boothMap }: Props) {
       <Heading size="md" mb={3}>
         Daily Busy Hours per Booth
       </Heading>
-
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="day" />
           <YAxis />
-
           <Tooltip
             formatter={(value, name) => [
               `${value} h`,
-              boothMap[name] || name,
+              boothMap[name]?.name || name,
             ]}
             labelFormatter={(day) => {
               const weekday = formatDayOfWeek(day)
               return `${day} (${weekday})`
             }}
           />
-
           <Legend />
-
           {boothIds.map((boothId, index) => (
             <Bar
               key={boothId}
               dataKey={boothId}
               stackId="a"
               fill={COLORS[index % COLORS.length]}
-              name={boothMap[boothId] || `Booth ${boothId.slice(0, 6)}`}
+              name={boothMap[boothId]?.name || `Booth ${boothId.slice(0, 6)}`}
             />
           ))}
         </BarChart>

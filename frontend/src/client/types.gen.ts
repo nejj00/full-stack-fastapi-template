@@ -111,6 +111,7 @@ export type PhoneBoothCreate = {
     timezone?: (string | null);
     last_seen?: (string | null);
     state_id?: (number | null);
+    working_hours: number;
     client_id?: (string | null);
     org_unit_id?: (string | null);
 };
@@ -121,6 +122,7 @@ export type PhoneBoothRead = {
     timezone?: (string | null);
     last_seen?: (string | null);
     state_id?: (number | null);
+    working_hours: number;
     id: string;
     client_id: (string | null);
     org_unit_id: (string | null);

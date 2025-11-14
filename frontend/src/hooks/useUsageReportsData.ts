@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { UsageSessionsService, PhoneBoothsService } from "@/client"
 
-
 // src/utils/dateUtils.ts
 export function getDateRange(start: Date, end: Date): string[] {
   const dates: string[] = []
@@ -28,7 +27,6 @@ function prepareUsageChartData(data: any[], checkedItems: string[]) {
 
   for (const session of filtered) {
     if (!session.start_time || !session.duration_seconds) continue
-
     const day = new Date(session.start_time).toISOString().split("T")[0]
     const boothId = session.phone_booth_id
     if (!usage[day]) usage[day] = {}
@@ -57,6 +55,12 @@ function prepareUsageChartData(data: any[], checkedItems: string[]) {
   })
 }
 
+// Define types for booth data
+interface BoothInfo {
+  name: string
+  workingHours: number
+}
+
 // --- React Hook: unified data source for usage reports ---
 export function useUsageReportsData(
   checkedItems: string[],
@@ -72,18 +76,16 @@ export function useUsageReportsData(
     queryFn: () => PhoneBoothsService.readPhoneBooths({ skip: 0, limit: 2000 }),
   })
 
-  // const { data: clients } = useQuery({
-  //   queryKey: ["clients"],
-  //   queryFn: () => ClientsService.readClients(),
-  // })
-
   console.log("Phone booths fetched:", booths);
 
-  // 🧭 Map booth IDs → serial numbers
+  // 🧭 Map booth IDs → { name, workingHours }
   const boothMap = useMemo(() => {
-    const map: Record<string, string> = {}
+    const map: Record<string, BoothInfo> = {}
     booths?.forEach((b: any) => {
-      map[b.id] = `${b.name} (${b.serial_number})`
+      map[b.id] = {
+        name: `${b.name} (${b.serial_number})`,
+        workingHours: b.working_hours || 8, // Default to 8 if not specified
+      }
     })
     return map
   }, [booths])

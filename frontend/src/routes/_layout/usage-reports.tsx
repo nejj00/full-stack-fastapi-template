@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import {
   Container,
   Heading,
   Spinner,
   Text,
   Stack,
-  Table,
 } from "@chakra-ui/react"
 import { RangeDatepicker } from "chakra-dayzed-datepicker"
 import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 import { useUsageReportsData } from "@/hooks/useUsageReportsData"
 import { UsageLineChart } from "@/components/UsageReports/UsageLineChart"
 import { UsageBarChart } from "@/components/UsageReports/UsageBarChart"
+import { UsageTable } from "@/components/UsageReports/UsageTable"
 
 export const Route = createFileRoute("/_layout/usage-reports")({
   component: UsageReportsPage,
@@ -20,7 +20,6 @@ export const Route = createFileRoute("/_layout/usage-reports")({
 
 function UsageReportsPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([])
-
   const today = new Date()
   const sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(today.getDate() - 6)
@@ -33,32 +32,6 @@ function UsageReportsPage() {
     )
   
   console.log("UsageReportsPage render:", { chartData, boothIds, boothMap })
-
-  // 🧮 Compute summary table data
-  const summaryData = useMemo(() => {
-    if (!chartData.length || !boothIds.length) return []
-
-    const totalDays =
-      selectedDates.length === 2
-        ? Math.ceil(
-            (selectedDates[1].getTime() - selectedDates[0].getTime()) /
-              (1000 * 60 * 60 * 24)
-          ) + 1
-        : 1
-    const totalAvailableHours = totalDays * 8 // 8 hours per day
-
-    return boothIds.map((boothId) => {
-      const totalUsage = chartData.reduce((sum, day) => sum + (day[boothId] || 0), 0)
-      const percentage = (totalUsage / totalAvailableHours) * 100
-      return {
-        id: boothId,
-        booth: boothMap[boothId] || boothId,
-        totalUsage,
-        totalAvailableHours,
-        percentage,
-      }
-    })
-  }, [chartData, boothIds, boothMap, selectedDates])
 
   return (
     <Container maxW="full" pt={12}>
@@ -87,32 +60,12 @@ function UsageReportsPage() {
             boothIds={boothIds}
             boothMap={boothMap}
           />
-
-          {/* ✅ Booth Usage Summary Table */}
-          <Heading size="md" mt={8}>
-            Booth Usage Summary
-          </Heading>
-
-          <Table.Root size="sm" variant="outline">
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader>Client / Booth</Table.ColumnHeader>
-                <Table.ColumnHeader>Usage (hrs)</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="end">Usage %</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {summaryData.map((item) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.booth}</Table.Cell>
-                  <Table.Cell>{item.totalUsage.toFixed(2)}/{item.totalAvailableHours}</Table.Cell>
-                  <Table.Cell textAlign="end">
-                    {item.percentage.toFixed(1)}%
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
+          <UsageTable
+            data={chartData}
+            boothIds={boothIds}
+            boothMap={boothMap}
+            selectedDates={selectedDates}
+          />
         </Stack>
       )}
     </Container>

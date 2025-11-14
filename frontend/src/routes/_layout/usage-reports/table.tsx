@@ -5,20 +5,17 @@ import {
   Heading,
   Spinner,
   Text,
-  Stack,
 } from "@chakra-ui/react"
 import { RangeDatepicker } from "chakra-dayzed-datepicker"
 import PhoneBoothTreeFilter from "@/components/Common/PhoneBoothFilterTree"
 import { useUsageReportsData } from "@/hooks/useUsageReportsData"
-import { UsageLineChart } from "@/components/UsageReports/UsageLineChart"
-import { UsageBarChart } from "@/components/UsageReports/UsageBarChart"
 import { UsageTable } from "@/components/UsageReports/UsageTable"
 
-export const Route = createFileRoute("/_layout/usage-reports")({
-  component: UsageReportsPage,
+export const Route = createFileRoute("/_layout/usage-reports/table")({
+  component: UsageReportsTablePage,
 })
 
-function UsageReportsPage() {
+function UsageReportsTablePage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([])
   const today = new Date()
   const sevenDaysAgo = new Date()
@@ -30,13 +27,11 @@ function UsageReportsPage() {
       checkedItems,
       selectedDates.length === 2 ? [selectedDates[0], selectedDates[1]] : undefined
     )
-  
-  console.log("UsageReportsPage render:", { chartData, boothIds, boothMap })
 
   return (
     <Container maxW="full" pt={12}>
       <Heading size="lg" mb={4}>
-        Usage Reports
+        Usage Reports - Summary Table
       </Heading>
 
       <PhoneBoothTreeFilter onCheckedChange={setCheckedItems} />
@@ -53,20 +48,12 @@ function UsageReportsPage() {
       )}
 
       {chartData.length > 0 && (
-        <Stack gap="10" mt={8}>
-          <UsageLineChart data={chartData} />
-          <UsageBarChart
-            data={chartData}
-            boothIds={boothIds}
-            boothMap={boothMap}
-          />
-          <UsageTable
-            data={chartData}
-            boothIds={boothIds}
-            boothMap={boothMap}
-            selectedDates={selectedDates}
-          />
-        </Stack>
+        <UsageTable
+          data={chartData}
+          boothIds={boothIds}
+          boothMap={boothMap}
+          selectedDates={selectedDates}
+        />
       )}
     </Container>
   )
